@@ -94,6 +94,7 @@ function doOptions(e) {
 4. Click **Deploy**.
 5. Google will ask you to authorize access. Click **Authorize access**, log in to your Google Account, click **Advanced**, and then click **Go to Untitled project (unsafe)**. Allow the requested permissions.
 6. Copy the **Web App URL** provided under the deployment details (it ends with `/exec`).
+https://script.google.com/macros/s/AKfycbzZmuXYf7iYdHSsAUjCDhj46lynMb-_HyPK_F_DgVWNOopsnyfvejB5RJ_hDYwKb5XbBw/exec
 
 ### Step 4: Link to Website
 1. Open `script.js` in your website code.

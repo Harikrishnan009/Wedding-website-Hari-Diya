@@ -1,5 +1,5 @@
 document.addEventListener("DOMContentLoaded", () => {
-    
+
     // ==========================================
     // 1. INTRO LOADER SEQUENCE
     // ==========================================
@@ -12,7 +12,7 @@ document.addEventListener("DOMContentLoaded", () => {
         if (loader) {
             loader.style.opacity = "0";
             loader.style.visibility = "hidden";
-            
+
             // Once loader fades, trigger hero animations
             setTimeout(() => {
                 loader.style.display = "none";
@@ -60,7 +60,7 @@ document.addEventListener("DOMContentLoaded", () => {
     // 3. SCROLL REVEAL ANIMATIONS (Intersection Observer)
     // ==========================================
     const revealElements = document.querySelectorAll(".story-card, .gallery-item");
-    
+
     const revealCallback = (entries, observer) => {
         entries.forEach(entry => {
             if (entry.isIntersecting) {
@@ -119,6 +119,7 @@ document.addEventListener("DOMContentLoaded", () => {
     // ==========================================
     // 5. RSVP FORM HANDLING WITH GOOGLE SPREADSHEET
     // ==========================================
+    const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzZmuXYf7iYdHSsAUjCDhj46lynMb-_HyPK_F_DgVWNOopsnyfvejB5RJ_hDYwKb5XbBw/exec"
     const rsvpForm = document.getElementById("rsvpForm");
     const guestsCountGroup = document.getElementById("guestsCountGroup");
     const guestAttendance = document.getElementById("guestAttendance");
@@ -143,7 +144,7 @@ document.addEventListener("DOMContentLoaded", () => {
     if (rsvpForm) {
         rsvpForm.addEventListener("submit", async (e) => {
             e.preventDefault();
-            
+
             // Set loading state
             submitBtn.disabled = true;
             btnText.textContent = "Sending...";
@@ -152,13 +153,13 @@ document.addEventListener("DOMContentLoaded", () => {
             formFeedback.className = "form-feedback"; // reset classes
 
             const formData = new FormData(rsvpForm);
-            
+
             // Format data for request
             const data = {};
             formData.forEach((value, key) => {
                 data[key] = value;
             });
-            
+
             // Note: Replace this URL placeholder with the deployment Apps Script Web App URL
             // Instructions for setting up are in the project's README.md
             const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/PLACEHOLDER_WEBAPP_ID/exec";
@@ -168,11 +169,11 @@ document.addEventListener("DOMContentLoaded", () => {
                 if (GOOGLE_SCRIPT_URL.includes("PLACEHOLDER_WEBAPP_ID")) {
                     await new Promise(resolve => setTimeout(resolve, 1500)); // mock network lag
                     console.log("Mock RSVP data submitted:", data);
-                    
+
                     formFeedback.classList.remove("hidden");
                     formFeedback.classList.add("success");
                     formFeedback.textContent = "Thank you! Your response has been joyfully received.";
-                    
+
                     rsvpForm.reset();
                     if (guestsCountGroup) guestsCountGroup.style.display = "flex";
                 } else {
@@ -185,7 +186,7 @@ document.addEventListener("DOMContentLoaded", () => {
                         },
                         body: JSON.stringify(data)
                     });
-                    
+
                     formFeedback.classList.remove("hidden");
                     formFeedback.classList.add("success");
                     formFeedback.textContent = "Thank you! Your response has been logged successfully.";
@@ -234,7 +235,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 scrub: true
             }
         });
-        
+
         // Soft fade parallax for hero name text
         gsap.to(".hero-content", {
             opacity: 0,
