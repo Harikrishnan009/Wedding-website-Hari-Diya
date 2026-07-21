@@ -154,45 +154,22 @@ document.addEventListener("DOMContentLoaded", () => {
 
             const formData = new FormData(rsvpForm);
 
-            // Format data for request
-            const data = {};
-            formData.forEach((value, key) => {
-                data[key] = value;
-            });
-
-            // Note: Replace this URL placeholder with the deployment Apps Script Web App URL
-            // Instructions for setting up are in the project's README.md
-            const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/PLACEHOLDER_WEBAPP_ID/exec";
-
             try {
-                // If the URL is still placeholder, mock successful response for demonstration
-                if (GOOGLE_SCRIPT_URL.includes("PLACEHOLDER_WEBAPP_ID")) {
-                    await new Promise(resolve => setTimeout(resolve, 1500)); // mock network lag
-                    console.log("Mock RSVP data submitted:", data);
+                // Actual submission to Google Sheets webapp URL
+                const response = await fetch(GOOGLE_SCRIPT_URL, {
+                    method: "POST",
+                    mode: "no-cors", // Required to submit cross-origin to Google Script
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify(Object.fromEntries(formData))
+                });
 
-                    formFeedback.classList.remove("hidden");
-                    formFeedback.classList.add("success");
-                    formFeedback.textContent = "Thank you! Your response has been joyfully received.";
-
-                    rsvpForm.reset();
-                    if (guestsCountGroup) guestsCountGroup.style.display = "flex";
-                } else {
-                    // Actual submission to Google Sheets webapp URL
-                    const response = await fetch(GOOGLE_SCRIPT_URL, {
-                        method: "POST",
-                        mode: "no-cors", // Required to submit cross-origin to Google Script
-                        headers: {
-                            "Content-Type": "application/json"
-                        },
-                        body: JSON.stringify(data)
-                    });
-
-                    formFeedback.classList.remove("hidden");
-                    formFeedback.classList.add("success");
-                    formFeedback.textContent = "Thank you! Your response has been logged successfully.";
-                    rsvpForm.reset();
-                    if (guestsCountGroup) guestsCountGroup.style.display = "flex";
-                }
+                formFeedback.classList.remove("hidden");
+                formFeedback.classList.add("success");
+                formFeedback.textContent = "Thank you! Your response has been logged successfully.";
+                rsvpForm.reset();
+                if (guestsCountGroup) guestsCountGroup.style.display = "flex";
             } catch (error) {
                 console.error("Error submitting RSVP:", error);
                 formFeedback.classList.remove("hidden");
