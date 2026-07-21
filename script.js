@@ -119,7 +119,7 @@ document.addEventListener("DOMContentLoaded", () => {
     // ==========================================
     // 5. RSVP FORM HANDLING WITH GOOGLE SPREADSHEET
     // ==========================================
-    const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzZmuXYf7iYdHSsAUjCDhj46lynMb-_HyPK_F_DgVWNOopsnyfvejB5RJ_hDYwKb5XbBw/exec"
+    const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwXBLSvJERB4fAirmr8WM7TWYkHb05kwdYmQEMtocfHOSbNTzJDJVoymW2a67znSnnfbg/exec";
     const rsvpForm = document.getElementById("rsvpForm");
     const guestsCountGroup = document.getElementById("guestsCountGroup");
     const guestAttendance = document.getElementById("guestAttendance");
@@ -225,5 +225,66 @@ document.addEventListener("DOMContentLoaded", () => {
                 scrub: true
             }
         });
+    }
+
+    // ==========================================
+    // 7. BACKGROUND MUSIC PLAYER
+    // ==========================================
+    const bgMusic = document.getElementById("bgMusic");
+    const musicToggle = document.getElementById("musicToggle");
+
+    if (bgMusic && musicToggle) {
+        const musicText = musicToggle.querySelector(".music-text");
+        const musicWaves = musicToggle.querySelector(".music-waves");
+        const iconPlay = musicToggle.querySelector(".icon-play");
+        const iconPause = musicToggle.querySelector(".icon-pause");
+
+        bgMusic.volume = 0.4; // Soft background volume
+
+        let isPlaying = false;
+
+        const togglePlay = () => {
+            if (isPlaying) {
+                bgMusic.pause();
+                isPlaying = false;
+                musicToggle.classList.remove("playing");
+                if (musicText) musicText.textContent = "Play Music";
+                if (musicWaves) musicWaves.classList.add("hidden");
+                if (iconPlay) iconPlay.classList.remove("hidden");
+                if (iconPause) iconPause.classList.add("hidden");
+            } else {
+                bgMusic.play().then(() => {
+                    isPlaying = true;
+                    musicToggle.classList.add("playing");
+                    if (musicText) musicText.textContent = "Music Playing";
+                    if (musicWaves) musicWaves.classList.remove("hidden");
+                    if (iconPlay) iconPlay.classList.add("hidden");
+                    if (iconPause) iconPause.classList.remove("hidden");
+                }).catch(err => {
+                    console.log("Autoplay interaction needed:", err);
+                });
+            }
+        };
+
+        musicToggle.addEventListener("click", togglePlay);
+
+        // Optional: Start music on user's first scroll/click interaction if allowed
+        const handleFirstInteraction = () => {
+            if (!isPlaying) {
+                bgMusic.play().then(() => {
+                    isPlaying = true;
+                    musicToggle.classList.add("playing");
+                    if (musicText) musicText.textContent = "Music Playing";
+                    if (musicWaves) musicWaves.classList.remove("hidden");
+                    if (iconPlay) iconPlay.classList.add("hidden");
+                    if (iconPause) iconPause.classList.remove("hidden");
+                }).catch(() => {});
+            }
+            document.removeEventListener("click", handleFirstInteraction);
+            document.removeEventListener("scroll", handleFirstInteraction);
+        };
+
+        document.addEventListener("click", handleFirstInteraction, { once: true });
+        document.addEventListener("scroll", handleFirstInteraction, { once: true });
     }
 });

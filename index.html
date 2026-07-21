@@ -245,11 +245,11 @@
                         </div>
                         <div class="detail-item">
                             <span class="detail-label">Reception</span>
-                            <span class="detail-value">Followed by lunch and celebration</span>
+                            <span class="detail-value">An evening of music, dinner, and starlit celebration ✨</span>
                         </div>
                         <div class="detail-item">
                             <span class="detail-label">Attire</span>
-                            <span class="detail-value">Traditional Ethnic Wear / Elegant Pastels</span>
+                            <span class="detail-value">Festive Glamour, Elegant Ethnic, or whatever makes you feel happiest and most yourself! 💫</span>
                         </div>
                     </div>
                 </div>
@@ -324,7 +324,30 @@
         <footer class="footer">
             <div class="footer-logo">H & D</div>
             <p class="footer-with-love">"With Love"<br>Hari and Diya</p>
-        </footer>
+        <!-- Floating Background Music Widget -->
+        <div id="musicPlayer" class="music-player-widget">
+            <audio id="bgMusic" loop preload="auto">
+                <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3" type="audio/mpeg">
+                <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" type="audio/mpeg">
+            </audio>
+            <button id="musicToggle" class="music-toggle-btn" aria-label="Toggle background music" title="Play / Pause Music">
+                <div class="music-icon-box">
+                    <svg class="icon-play" width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+                        <polygon points="5 3 19 12 5 21 5 3"></polygon>
+                    </svg>
+                    <svg class="icon-pause hidden" width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+                        <rect x="6" y="4" width="4" height="16"></rect>
+                        <rect x="14" y="4" width="4" height="16"></rect>
+                    </svg>
+                </div>
+                <span class="music-text">Play Music</span>
+                <div class="music-waves hidden">
+                    <span class="bar bar1"></span>
+                    <span class="bar bar2"></span>
+                    <span class="bar bar3"></span>
+                </div>
+            </button>
+        </div>
 
     </main>
 
