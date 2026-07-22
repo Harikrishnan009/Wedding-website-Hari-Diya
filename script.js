@@ -268,8 +268,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
         musicToggle.addEventListener("click", togglePlay);
 
-        // Optional: Start music on user's first scroll/click interaction if allowed
-        const handleFirstInteraction = () => {
+        // Start music on user's first scroll interaction
+        const startMusicOnScroll = () => {
             if (!isPlaying) {
                 bgMusic.play().then(() => {
                     isPlaying = true;
@@ -278,13 +278,29 @@ document.addEventListener("DOMContentLoaded", () => {
                     if (musicWaves) musicWaves.classList.remove("hidden");
                     if (iconPlay) iconPlay.classList.add("hidden");
                     if (iconPause) iconPause.classList.remove("hidden");
-                }).catch(() => {});
+                }).catch(err => {
+                    console.log("Scroll autoplay interaction needed:", err);
+                });
             }
-            document.removeEventListener("click", handleFirstInteraction);
-            document.removeEventListener("scroll", handleFirstInteraction);
+            removeScrollListeners();
         };
 
-        document.addEventListener("click", handleFirstInteraction, { once: true });
-        document.addEventListener("scroll", handleFirstInteraction, { once: true });
+        const removeScrollListeners = () => {
+            window.removeEventListener("scroll", startMusicOnScroll);
+            window.removeEventListener("wheel", startMusicOnScroll);
+            window.removeEventListener("touchmove", startMusicOnScroll);
+        };
+
+        window.addEventListener("scroll", startMusicOnScroll, { passive: true });
+        window.addEventListener("wheel", startMusicOnScroll, { passive: true });
+        window.addEventListener("touchmove", startMusicOnScroll, { passive: true });
+
+        // Also trigger if scroll indicator is clicked
+        const scrollIndicator = document.getElementById("scrollIndicator");
+        if (scrollIndicator) {
+            scrollIndicator.addEventListener("click", () => {
+                if (!isPlaying) startMusicOnScroll();
+            });
+        }
     }
 });
