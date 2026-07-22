@@ -349,6 +349,65 @@
             </button>
         </div>
 
+        <!-- Floating Color Palette Switcher Widget -->
+        <div id="paletteSwitcher" class="palette-switcher-widget">
+            <div id="palettePanel" class="palette-panel">
+                <div class="mode-toggle-row">
+                    <span class="mode-label">Mode</span>
+                    <div class="mode-switch-btns">
+                        <button id="modeLightBtn" class="mode-btn active" title="Light Mode">☀️ Light</button>
+                        <button id="modeDarkBtn" class="mode-btn" title="Dark Mode">🌙 Dark</button>
+                    </div>
+                </div>
+                <div class="palette-title">Color Themes</div>
+                <div class="palette-option active" data-theme="sage-gold">
+                    <span class="palette-name">Sage & Gold (Default)</span>
+                    <div class="palette-dots">
+                        <span class="palette-dot" style="background: #7D8C77;"></span>
+                        <span class="palette-dot" style="background: #C5A059;"></span>
+                    </div>
+                </div>
+                <div class="palette-option" data-theme="rose-copper">
+                    <span class="palette-name">Rose & Copper</span>
+                    <div class="palette-dots">
+                        <span class="palette-dot" style="background: #A67B78;"></span>
+                        <span class="palette-dot" style="background: #C89355;"></span>
+                    </div>
+                </div>
+                <div class="palette-option" data-theme="emerald-gold">
+                    <span class="palette-name">Emerald & Gold</span>
+                    <div class="palette-dots">
+                        <span class="palette-dot" style="background: #4E7C69;"></span>
+                        <span class="palette-dot" style="background: #D4AF37;"></span>
+                    </div>
+                </div>
+                <div class="palette-option" data-theme="eucalyptus-sand">
+                    <span class="palette-name">Eucalyptus & Sand</span>
+                    <div class="palette-dots">
+                        <span class="palette-dot" style="background: #5B7065;"></span>
+                        <span class="palette-dot" style="background: #B8976C;"></span>
+                    </div>
+                </div>
+                <div class="palette-option" data-theme="burgundy-champagne">
+                    <span class="palette-name">Burgundy & Gold</span>
+                    <div class="palette-dots">
+                        <span class="palette-dot" style="background: #803B43;"></span>
+                        <span class="palette-dot" style="background: #CBA358;"></span>
+                    </div>
+                </div>
+            </div>
+            <button id="paletteToggle" class="palette-toggle-btn" aria-label="Explore color palettes" title="Explore Color Palettes">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="13.5" cy="6.5" r=".5" fill="currentColor"/>
+                    <circle cx="17.5" cy="10.5" r=".5" fill="currentColor"/>
+                    <circle cx="8.5" cy="7.5" r=".5" fill="currentColor"/>
+                    <circle cx="6.5" cy="12.5" r=".5" fill="currentColor"/>
+                    <path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10c.92 0 1.7-.75 1.7-1.68 0-.44-.17-.86-.44-1.18-.28-.32-.45-.75-.45-1.22 0-1.02.83-1.85 1.85-1.85H17c2.76 0 5-2.24 5-5 0-4.97-4.5-9-10-9z"/>
+                </svg>
+                <span>Themes</span>
+            </button>
+        </div>
+
     </main>
 
     <!-- GSAP for Smooth Animations -->
