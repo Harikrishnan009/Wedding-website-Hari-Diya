@@ -119,7 +119,7 @@ document.addEventListener("DOMContentLoaded", () => {
     // ==========================================
     // 5. RSVP FORM HANDLING WITH GOOGLE SPREADSHEET
     // ==========================================
-    const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwXBLSvJERB4fAirmr8WM7TWYkHb05kwdYmQEMtocfHOSbNTzJDJVoymW2a67znSnnfbg/exec";
+    const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwZF3U-GPPNXEUIxkT7wYOV9YBBx4zyO60eTZdyDwHquoWB1detY9VdCVoH98BNdARdvA/exec";
     const rsvpForm = document.getElementById("rsvpForm");
     const guestsCountGroup = document.getElementById("guestsCountGroup");
     const guestAttendance = document.getElementById("guestAttendance");
