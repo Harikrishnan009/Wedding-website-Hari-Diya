@@ -96,7 +96,7 @@ a {
 
 /* --- SVG ring stage --- */
 .rings-stage {
-    width: min(55vw, 380px);
+    width: min(60vw, 460px);
     position: relative;
 }
 
@@ -104,26 +104,24 @@ a {
     width: 100%;
     height: auto;
     overflow: visible;
-    filter: drop-shadow(0 0 12px rgba(197, 160, 89, 0.4));
+    filter: drop-shadow(0 0 18px rgba(197, 160, 89, 0.45));
 }
 
-/* Stage 1: starting state is set by JS (gsap.set) on load */
-#ring-left {
+/* Initial states — GSAP sets positions and opacity on DOMContentLoaded */
+#g-ring-left,
+#g-ring-right,
+#g-ring-right-front {
     opacity: 0;
 }
 
-#ring-right {
-    opacity: 0;
-}
-
+/* Infinity path — dasharray / dashoffset set by JS via getTotalLength() */
 #infinity-path {
-    stroke-dasharray: 900;
-    stroke-dashoffset: 900;
+    opacity: 0;
 }
 
-/* Glow filter applied when infinity forms */
+/* Glow class toggled by JS after infinity draws */
 #infinity-path.glowing {
-    filter: url(#glow);
+    filter: url(#infinityGlow);
 }
 
 /* --- H·D Logo --- */

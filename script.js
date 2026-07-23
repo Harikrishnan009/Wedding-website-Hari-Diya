@@ -1,18 +1,18 @@
 document.addEventListener("DOMContentLoaded", () => {
 
     // ==========================================
-    // 1. INTRO LOADER — INFINITY RING ANIMATION
+    // 1. INTRO LOADER — WEDDING RINGS → INFINITY
     // ==========================================
-    const loader       = document.getElementById("intro-loader");
-    const heroContent  = document.querySelector(".hero-content");
-    const ringLeft     = document.getElementById("ring-left");
-    const ringRight    = document.getElementById("ring-right");
-    const infinityPath = document.getElementById("infinity-path");
-    const logoWrap     = document.querySelector(".loader-logo-wrap");
+    const loader         = document.getElementById("intro-loader");
+    const heroContent    = document.querySelector(".hero-content");
+    const gRingLeft      = document.getElementById("g-ring-left");
+    const gRingRight     = document.getElementById("g-ring-right");
+    const gRingRightFront = document.getElementById("g-ring-right-front");
+    const infinityPath   = document.getElementById("infinity-path");
+    const logoWrap       = document.querySelector(".loader-logo-wrap");
 
     function runInfinityIntro() {
         if (typeof gsap === "undefined") {
-            // Fallback: just hide loader after 3s
             setTimeout(() => {
                 loader.classList.add("hide");
                 setTimeout(() => { loader.style.display = "none"; }, 1300);
@@ -20,11 +20,21 @@ document.addEventListener("DOMContentLoaded", () => {
             return;
         }
 
-        // Set starting positions via GSAP attr (SVG-safe)
-        // Rings start way off-screen left/right
-        gsap.set(ringLeft,  { attr: { cx: -100 }, opacity: 0 });
-        gsap.set(ringRight, { attr: { cx:  500 }, opacity: 0 });
-        gsap.set(infinityPath, { opacity: 0 });
+        // ── Measure infinity path so the draw animation is perfectly timed ──
+        const pathLen = infinityPath.getTotalLength
+            ? Math.ceil(infinityPath.getTotalLength())
+            : 1050;
+
+        // ── Initial states ──
+        // Rings start off-screen (CSS translateX on SVG groups)
+        gsap.set(gRingLeft,       { x: -340, opacity: 0 });
+        gsap.set(gRingRight,      { x:  340, opacity: 0 });
+        gsap.set(gRingRightFront, { x:  340, opacity: 0 }); // moves WITH right ring
+        gsap.set(infinityPath, {
+            opacity: 0,
+            strokeDasharray: pathLen,
+            strokeDashoffset: pathLen
+        });
 
         const tl = gsap.timeline({
             onComplete: () => {
@@ -39,66 +49,83 @@ document.addEventListener("DOMContentLoaded", () => {
             }
         });
 
-        /* ---- PHASE 1: Rings fly in to their resting positions ---- */
-        tl.to(ringLeft, {
-            attr: { cx: 100 },
-            opacity: 1,
-            duration: 1.0,
-            ease: "power3.out"
+        /* ──────────────────────────────────────────────
+           PHASE 1 (0.2 s): Both rings fly in from sides
+           Gold ring from left, Sage ring from right.
+        ──────────────────────────────────────────────── */
+        tl.to(gRingLeft, {
+            x: 0, opacity: 1,
+            duration: 1.1, ease: "power3.out"
         }, 0.2);
 
-        tl.to(ringRight, {
-            attr: { cx: 300 },
-            opacity: 1,
-            duration: 1.0,
-            ease: "power3.out"
+        tl.to(gRingRight, {
+            x: 0, opacity: 1,
+            duration: 1.1, ease: "power3.out"
         }, 0.2);
 
-        /* ---- PHASE 2: Rings converge toward the centre ---- */
-        tl.to(ringLeft, {
-            attr: { cx: 150 },
-            duration: 0.7,
-            ease: "power2.inOut"
-        }, 1.3);
+        // Front-arc travels with the right ring (opacity still 0)
+        tl.to(gRingRightFront, {
+            x: 0,
+            duration: 1.1, ease: "power3.out"
+        }, 0.2);
 
-        tl.to(ringRight, {
-            attr: { cx: 250 },
-            duration: 0.7,
-            ease: "power2.inOut"
-        }, 1.3);
+        /* ──────────────────────────────────────────────
+           PHASE 2 (1.45 s): Rings interlock.
+           The front arc (right ring clipped to left-ring
+           area) fades in, creating the linked-rings look.
+        ──────────────────────────────────────────────── */
+        tl.to(gRingRightFront, {
+            opacity: 1,
+            duration: 0.55, ease: "power2.out"
+        }, 1.45);
 
-        /* ---- PHASE 3: Rings fade out, infinity path draws in ---- */
-        tl.to([ringLeft, ringRight], {
+        /* ──────────────────────────────────────────────
+           PHASE 3 (2.0 – 2.5 s): Admire the interlock.
+           Brief hold — no animation.
+        ──────────────────────────────────────────────── */
+
+        /* ──────────────────────────────────────────────
+           PHASE 4 (2.5 s): Rings dissolve.
+        ──────────────────────────────────────────────── */
+        tl.to([gRingLeft, gRingRight, gRingRightFront], {
             opacity: 0,
-            duration: 0.4,
-            ease: "power1.in"
-        }, 1.9);
+            duration: 0.5, ease: "power1.in"
+        }, 2.5);
 
+        /* ──────────────────────────────────────────────
+           PHASE 5 (2.6 s): Infinity path draws itself.
+           Stroke-dashoffset animates from pathLen → 0.
+        ──────────────────────────────────────────────── */
         tl.to(infinityPath, {
             opacity: 1,
             strokeDashoffset: 0,
-            duration: 1.15,
-            ease: "power2.inOut"
-        }, 1.95);
+            duration: 1.35, ease: "power2.inOut"
+        }, 2.6);
 
-        /* ---- PHASE 4: Glow pulse ---- */
-        tl.call(() => { infinityPath.classList.add("glowing"); }, [], 2.85);
+        /* ──────────────────────────────────────────────
+           PHASE 6 (3.8 s): Glow pulse on infinity.
+        ──────────────────────────────────────────────── */
+        tl.call(() => { infinityPath.classList.add("glowing"); }, [], 3.8);
         tl.to(infinityPath, {
-            attr: { "stroke-width": 5 },
-            duration: 0.35,
-            ease: "sine.inOut",
-            yoyo: true,
-            repeat: 1
-        }, 2.85);
+            attr: { "stroke-width": 23 },
+            duration: 0.38, ease: "sine.out",
+            yoyo: true, repeat: 1
+        }, 3.8);
 
-        /* ---- PHASE 5: H·D logo fades in beneath infinity ---- */
-        tl.call(() => { logoWrap.classList.add("visible"); }, [], 3.1);
+        /* ──────────────────────────────────────────────
+           PHASE 7 (4.05 s): H·D logo rises into view.
+        ──────────────────────────────────────────────── */
+        tl.call(() => { logoWrap.classList.add("visible"); }, [], 4.05);
 
-        /* ---- PHASE 6: Hold, then exit ---- */
-        tl.to({}, { duration: 1.65 });
+        /* ──────────────────────────────────────────────
+           PHASE 8: Hold, then trigger onComplete → exit.
+        ──────────────────────────────────────────────── */
+        tl.to({}, { duration: 2.0 });
     }
 
     runInfinityIntro();
+
+
 
     // ==========================================
     // 2. MOBILE MENU & NAVIGATION
