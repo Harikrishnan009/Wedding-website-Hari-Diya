@@ -1,28 +1,104 @@
 document.addEventListener("DOMContentLoaded", () => {
 
     // ==========================================
-    // 1. INTRO LOADER SEQUENCE
+    // 1. INTRO LOADER — INFINITY RING ANIMATION
     // ==========================================
-    const loader = document.getElementById("intro-loader");
-    const mainContent = document.getElementById("main-content");
-    const heroContent = document.querySelector(".hero-content");
+    const loader       = document.getElementById("intro-loader");
+    const heroContent  = document.querySelector(".hero-content");
+    const ringLeft     = document.getElementById("ring-left");
+    const ringRight    = document.getElementById("ring-right");
+    const infinityPath = document.getElementById("infinity-path");
+    const logoWrap     = document.querySelector(".loader-logo-wrap");
 
-    // Hide loader after logo animation completes (approx 2.8s)
-    setTimeout(() => {
-        if (loader) {
-            loader.style.opacity = "0";
-            loader.style.visibility = "hidden";
-
-            // Once loader fades, trigger hero animations
+    function runInfinityIntro() {
+        if (typeof gsap === "undefined") {
+            // Fallback: just hide loader after 3s
             setTimeout(() => {
-                loader.style.display = "none";
-                if (heroContent) {
-                    heroContent.style.opacity = "1";
-                    heroContent.style.transform = "scale(1)";
-                }
-            }, 800); // match transition duration
+                loader.classList.add("hide");
+                setTimeout(() => { loader.style.display = "none"; }, 1300);
+            }, 3000);
+            return;
         }
-    }, 2800);
+
+        // Set starting positions via GSAP attr (SVG-safe)
+        // Rings start way off-screen left/right
+        gsap.set(ringLeft,  { attr: { cx: -100 }, opacity: 0 });
+        gsap.set(ringRight, { attr: { cx:  500 }, opacity: 0 });
+        gsap.set(infinityPath, { opacity: 0 });
+
+        const tl = gsap.timeline({
+            onComplete: () => {
+                loader.classList.add("hide");
+                setTimeout(() => {
+                    loader.style.display = "none";
+                    if (heroContent) {
+                        heroContent.style.opacity = "1";
+                        heroContent.style.transform = "scale(1)";
+                    }
+                }, 1350);
+            }
+        });
+
+        /* ---- PHASE 1: Rings fly in to their resting positions ---- */
+        tl.to(ringLeft, {
+            attr: { cx: 100 },
+            opacity: 1,
+            duration: 1.0,
+            ease: "power3.out"
+        }, 0.2);
+
+        tl.to(ringRight, {
+            attr: { cx: 300 },
+            opacity: 1,
+            duration: 1.0,
+            ease: "power3.out"
+        }, 0.2);
+
+        /* ---- PHASE 2: Rings converge toward the centre ---- */
+        tl.to(ringLeft, {
+            attr: { cx: 150 },
+            duration: 0.7,
+            ease: "power2.inOut"
+        }, 1.3);
+
+        tl.to(ringRight, {
+            attr: { cx: 250 },
+            duration: 0.7,
+            ease: "power2.inOut"
+        }, 1.3);
+
+        /* ---- PHASE 3: Rings fade out, infinity path draws in ---- */
+        tl.to([ringLeft, ringRight], {
+            opacity: 0,
+            duration: 0.4,
+            ease: "power1.in"
+        }, 1.9);
+
+        tl.to(infinityPath, {
+            opacity: 1,
+            strokeDashoffset: 0,
+            duration: 1.15,
+            ease: "power2.inOut"
+        }, 1.95);
+
+        /* ---- PHASE 4: Glow pulse ---- */
+        tl.call(() => { infinityPath.classList.add("glowing"); }, [], 2.85);
+        tl.to(infinityPath, {
+            attr: { "stroke-width": 5 },
+            duration: 0.35,
+            ease: "sine.inOut",
+            yoyo: true,
+            repeat: 1
+        }, 2.85);
+
+        /* ---- PHASE 5: H·D logo fades in beneath infinity ---- */
+        tl.call(() => { logoWrap.classList.add("visible"); }, [], 3.1);
+
+        /* ---- PHASE 6: Hold, then exit ---- */
+        tl.to({}, { duration: 1.65 });
+    }
+
+    runInfinityIntro();
 
     // ==========================================
     // 2. MOBILE MENU & NAVIGATION
