@@ -60,16 +60,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
                 ctx.beginPath();
                 ctx.arc(f.x, f.y, f.r, 0, Math.PI * 2, false);
-                
-                if (f.glow) {
-                    ctx.shadowBlur = 8;
-                    ctx.shadowColor = "rgba(242, 220, 138, 0.85)";
-                    ctx.fillStyle = `rgba(255, 253, 245, ${f.opacity})`;
-                } else {
-                    ctx.shadowBlur = 0;
-                    ctx.fillStyle = `rgba(224, 235, 220, ${f.opacity * 0.85})`;
-                }
-                
+                ctx.shadowBlur = 0;
+                ctx.fillStyle = `rgba(180, 190, 195, ${f.opacity * 0.55})`;
                 ctx.fill();
             }
 
@@ -97,35 +89,28 @@ document.addEventListener("DOMContentLoaded", () => {
         };
 
         if (typeof gsap === "undefined") {
-            logoWrap.classList.add("visible");
-            setTimeout(finishIntro, 3000);
+            logoWrap.style.opacity = "1";
+            logoWrap.style.transform = "scale(1)";
+            setTimeout(finishIntro, 2500);
             return;
         }
 
-        gsap.set(logoWrap, { opacity: 0, scale: 0.85, y: 20 });
+        gsap.set(logoWrap, { opacity: 0, scale: 0.95 });
 
         const tl = gsap.timeline({
             onComplete: finishIntro
         });
 
-        // 1. Reveal H·D monogram logo emblem centered amidst snowfall
+        // Clean static reveal of H·D monogram logo emblem centered amidst snowfall on white background
         tl.to(logoWrap, {
             opacity: 1,
             scale: 1,
-            y: 0,
-            duration: 1.4,
-            ease: "power3.out"
-        }, 0.3);
+            duration: 1.2,
+            ease: "power2.out"
+        }, 0.2);
 
-        // 2. Gentle breathing pulse while snow falls around it
-        tl.to(logoWrap, {
-            scale: 1.03,
-            duration: 1.8,
-            ease: "sine.inOut"
-        }, 1.7);
-
-        // 3. Pause briefly to enjoy snowfall before fading into main site
-        tl.to({}, { duration: 1.2 });
+        // Display before fading smoothly into the main site
+        tl.to({}, { duration: 1.8 });
     }
 
     runSnowfallLogoIntro();
