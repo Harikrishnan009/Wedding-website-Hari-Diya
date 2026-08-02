@@ -1,7 +1,7 @@
 document.addEventListener("DOMContentLoaded", () => {
 
     // ==========================================
-    // 1. INTRO LOADER — WEDDING RINGS → INFINITY
+    // 1. INTRO LOADER — WEDDING RINGS → INFINITY + BEAUTIFUL SNOWFALL
     // ==========================================
     const loader         = document.getElementById("intro-loader");
     const heroContent    = document.querySelector(".hero-content");
@@ -10,13 +10,90 @@ document.addEventListener("DOMContentLoaded", () => {
     const gRingRightFront = document.getElementById("g-ring-right-front");
     const infinityPath   = document.getElementById("infinity-path");
     const logoWrap       = document.querySelector(".loader-logo-wrap");
+    const snowCanvas     = document.getElementById("snow-canvas");
+
+    // ── Snowfall Canvas Particle Engine ──
+    let snowAnimId = null;
+    function initSnowfall() {
+        if (!snowCanvas) return;
+        const ctx = snowCanvas.getContext("2d");
+        let width = snowCanvas.width = window.innerWidth;
+        let height = snowCanvas.height = window.innerHeight;
+
+        window.addEventListener("resize", () => {
+            if (!snowCanvas) return;
+            width = snowCanvas.width = window.innerWidth;
+            height = snowCanvas.height = window.innerHeight;
+        });
+
+        const particleCount = Math.min(120, Math.floor(width / 11));
+        const flakes = [];
+
+        for (let i = 0; i < particleCount; i++) {
+            flakes.push({
+                x: Math.random() * width,
+                y: Math.random() * height,
+                r: Math.random() * 3.2 + 0.8,
+                d: Math.random() * particleCount,
+                opacity: Math.random() * 0.75 + 0.25,
+                speedY: Math.random() * 1.2 + 0.6,
+                swaySpeed: Math.random() * 0.02 + 0.005,
+                swayOffset: Math.random() * Math.PI * 2,
+                glow: Math.random() > 0.4
+            });
+        }
+
+        let angle = 0;
+        function renderSnow() {
+            ctx.clearRect(0, 0, width, height);
+            angle += 0.01;
+
+            for (let i = 0; i < flakes.length; i++) {
+                const f = flakes[i];
+                f.y += f.speedY;
+                f.x += Math.sin(angle + f.swayOffset) * 0.8;
+
+                if (f.y > height) {
+                    f.y = -10;
+                    f.x = Math.random() * width;
+                }
+
+                ctx.beginPath();
+                ctx.arc(f.x, f.y, f.r, 0, Math.PI * 2, false);
+                
+                if (f.glow) {
+                    ctx.shadowBlur = 8;
+                    ctx.shadowColor = "rgba(242, 220, 138, 0.85)";
+                    ctx.fillStyle = `rgba(255, 253, 245, ${f.opacity})`;
+                } else {
+                    ctx.shadowBlur = 0;
+                    ctx.fillStyle = `rgba(224, 235, 220, ${f.opacity * 0.85})`;
+                }
+                
+                ctx.fill();
+            }
+
+            snowAnimId = requestAnimationFrame(renderSnow);
+        }
+
+        renderSnow();
+    }
+
+    initSnowfall();
 
     function runInfinityIntro() {
+        if (!loader || !gRingLeft || !gRingRight || !gRingRightFront || !infinityPath) {
+            return;
+        }
+
         if (typeof gsap === "undefined") {
             setTimeout(() => {
                 loader.classList.add("hide");
-                setTimeout(() => { loader.style.display = "none"; }, 1300);
-            }, 3000);
+                setTimeout(() => { 
+                    loader.style.display = "none";
+                    if (snowAnimId) cancelAnimationFrame(snowAnimId);
+                }, 1300);
+            }, 3200);
             return;
         }
 
@@ -26,27 +103,44 @@ document.addEventListener("DOMContentLoaded", () => {
             : 1050;
 
         // ── Initial states ──
-        // Rings start off-screen (CSS translateX on SVG groups)
-        gsap.set(gRingLeft,       { x: -340, opacity: 0 });
-        gsap.set(gRingRight,      { x:  340, opacity: 0 });
-        gsap.set(gRingRightFront, { x:  340, opacity: 0 }); // moves WITH right ring
+        const finishIntro = () => {
+            loader.classList.add("hide");
+            setTimeout(() => {
+                loader.style.display = "none";
+                if (snowAnimId) cancelAnimationFrame(snowAnimId);
+                if (heroContent) {
+                    heroContent.style.opacity = "1";
+                    heroContent.style.transform = "scale(1)";
+                }
+            }, 1350);
+        };
+
+        if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+            gsap.set([gRingLeft, gRingRight, gRingRightFront], { opacity: 0 });
+            gsap.set(infinityPath, { opacity: 1, strokeDasharray: pathLen, strokeDashoffset: 0 });
+            if (logoWrap) logoWrap.classList.add("visible");
+            setTimeout(finishIntro, 1200);
+            return;
+        }
+
+        gsap.set([gRingLeft, gRingRight, gRingRightFront], {
+            opacity: 0,
+            scale: 0.72,
+            transformOrigin: "50% 50%"
+        });
+        gsap.set(gRingLeft, { x: -190, y: 30, rotation: -28 });
+        gsap.set([gRingRight, gRingRightFront], { x: 190, y: -30, rotation: 28 });
         gsap.set(infinityPath, {
             opacity: 0,
+            scale: 0.86,
+            transformOrigin: "50% 50%",
             strokeDasharray: pathLen,
             strokeDashoffset: pathLen
         });
 
         const tl = gsap.timeline({
-            onComplete: () => {
-                loader.classList.add("hide");
-                setTimeout(() => {
-                    loader.style.display = "none";
-                    if (heroContent) {
-                        heroContent.style.opacity = "1";
-                        heroContent.style.transform = "scale(1)";
-                    }
-                }, 1350);
-            }
+            defaults: { ease: "power2.inOut" },
+            onComplete: finishIntro
         });
 
         /* ──────────────────────────────────────────────
@@ -54,20 +148,41 @@ document.addEventListener("DOMContentLoaded", () => {
            Gold ring from left, Sage ring from right.
         ──────────────────────────────────────────────── */
         tl.to(gRingLeft, {
-            x: 0, opacity: 1,
-            duration: 1.1, ease: "power3.out"
-        }, 0.2);
+            opacity: 1,
+            scale: 1,
+            duration: 0.55,
+            ease: "sine.out"
+        }, 0.1);
 
         tl.to(gRingRight, {
-            x: 0, opacity: 1,
-            duration: 1.1, ease: "power3.out"
-        }, 0.2);
+            opacity: 1,
+            scale: 1,
+            duration: 0.55,
+            ease: "sine.out"
+        }, 0.1);
+
+        tl.to(gRingRightFront, {
+            scale: 1,
+            duration: 0.55,
+            ease: "sine.out"
+        }, 0.1);
 
         // Front-arc travels with the right ring (opacity still 0)
-        tl.to(gRingRightFront, {
-            x: 0,
-            duration: 1.1, ease: "power3.out"
-        }, 0.2);
+        tl.to(gRingLeft, {
+            keyframes: [
+                { x: -126, y: -18, rotation: -14, duration: 0.42, ease: "sine.inOut" },
+                { x: -48, y: -44, rotation: 12, duration: 0.48, ease: "sine.inOut" },
+                { x: 0, y: 0, rotation: 0, duration: 0.62, ease: "back.out(1.15)" }
+            ]
+        }, 0.28);
+
+        tl.to([gRingRight, gRingRightFront], {
+            keyframes: [
+                { x: 126, y: 18, rotation: 14, duration: 0.42, ease: "sine.inOut" },
+                { x: 48, y: 44, rotation: -12, duration: 0.48, ease: "sine.inOut" },
+                { x: 0, y: 0, rotation: 0, duration: 0.62, ease: "back.out(1.15)" }
+            ]
+        }, 0.28);
 
         /* ──────────────────────────────────────────────
            PHASE 2 (1.45 s): Rings interlock.
@@ -88,9 +203,25 @@ document.addEventListener("DOMContentLoaded", () => {
            PHASE 4 (2.5 s): Rings dissolve.
         ──────────────────────────────────────────────── */
         tl.to([gRingLeft, gRingRight, gRingRightFront], {
-            opacity: 0,
-            duration: 0.5, ease: "power1.in"
-        }, 2.5);
+            scaleX: 1.18,
+            scaleY: 0.82,
+            duration: 0.55,
+            ease: "sine.inOut"
+        }, 2.0);
+
+        tl.to(gRingLeft, {
+            x: 38,
+            opacity: 0.28,
+            duration: 0.72,
+            ease: "power2.inOut"
+        }, 2.12);
+
+        tl.to([gRingRight, gRingRightFront], {
+            x: -38,
+            opacity: 0.28,
+            duration: 0.72,
+            ease: "power2.inOut"
+        }, 2.12);
 
         /* ──────────────────────────────────────────────
            PHASE 5 (2.6 s): Infinity path draws itself.
@@ -98,24 +229,30 @@ document.addEventListener("DOMContentLoaded", () => {
         ──────────────────────────────────────────────── */
         tl.to(infinityPath, {
             opacity: 1,
+            scale: 1,
             strokeDashoffset: 0,
-            duration: 1.35, ease: "power2.inOut"
-        }, 2.6);
+            duration: 1.5, ease: "power2.inOut"
+        }, 2.15);
+
+        tl.to([gRingLeft, gRingRight, gRingRightFront], {
+            opacity: 0,
+            duration: 0.45, ease: "power1.in"
+        }, 2.75);
 
         /* ──────────────────────────────────────────────
            PHASE 6 (3.8 s): Glow pulse on infinity.
         ──────────────────────────────────────────────── */
-        tl.call(() => { infinityPath.classList.add("glowing"); }, [], 3.8);
+        tl.call(() => { infinityPath.classList.add("glowing"); }, [], 3.72);
         tl.to(infinityPath, {
-            attr: { "stroke-width": 23 },
-            duration: 0.38, ease: "sine.out",
+            attr: { "stroke-width": 24 },
+            duration: 0.34, ease: "sine.out",
             yoyo: true, repeat: 1
-        }, 3.8);
+        }, 3.72);
 
         /* ──────────────────────────────────────────────
            PHASE 7 (4.05 s): H·D logo rises into view.
         ──────────────────────────────────────────────── */
-        tl.call(() => { logoWrap.classList.add("visible"); }, [], 4.05);
+        tl.call(() => { if (logoWrap) logoWrap.classList.add("visible"); }, [], 4.05);
 
         /* ──────────────────────────────────────────────
            PHASE 8: Hold, then trigger onComplete → exit.
