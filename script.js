@@ -81,28 +81,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
     initSnowfall();
 
-    function runInfinityIntro() {
-        if (!loader || !gRingLeft || !gRingRight || !gRingRightFront || !infinityPath) {
-            return;
-        }
+    function runSnowfallLogoIntro() {
+        if (!loader || !logoWrap) return;
 
-        if (typeof gsap === "undefined") {
-            setTimeout(() => {
-                loader.classList.add("hide");
-                setTimeout(() => { 
-                    loader.style.display = "none";
-                    if (snowAnimId) cancelAnimationFrame(snowAnimId);
-                }, 1300);
-            }, 3200);
-            return;
-        }
-
-        // ── Measure infinity path so the draw animation is perfectly timed ──
-        const pathLen = infinityPath.getTotalLength
-            ? Math.ceil(infinityPath.getTotalLength())
-            : 1050;
-
-        // ── Initial states ──
         const finishIntro = () => {
             loader.classList.add("hide");
             setTimeout(() => {
@@ -112,155 +93,42 @@ document.addEventListener("DOMContentLoaded", () => {
                     heroContent.style.opacity = "1";
                     heroContent.style.transform = "scale(1)";
                 }
-            }, 1350);
+            }, 1200);
         };
 
-        if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
-            gsap.set([gRingLeft, gRingRight, gRingRightFront], { opacity: 0 });
-            gsap.set(infinityPath, { opacity: 1, strokeDasharray: pathLen, strokeDashoffset: 0 });
-            if (logoWrap) logoWrap.classList.add("visible");
-            setTimeout(finishIntro, 1200);
+        if (typeof gsap === "undefined") {
+            logoWrap.classList.add("visible");
+            setTimeout(finishIntro, 3000);
             return;
         }
 
-        gsap.set([gRingLeft, gRingRight, gRingRightFront], {
-            opacity: 0,
-            scale: 0.72,
-            transformOrigin: "50% 50%"
-        });
-        gsap.set(gRingLeft, { x: -190, y: 30, rotation: -28 });
-        gsap.set([gRingRight, gRingRightFront], { x: 190, y: -30, rotation: 28 });
-        gsap.set(infinityPath, {
-            opacity: 0,
-            scale: 0.86,
-            transformOrigin: "50% 50%",
-            strokeDasharray: pathLen,
-            strokeDashoffset: pathLen
-        });
+        gsap.set(logoWrap, { opacity: 0, scale: 0.85, y: 20 });
 
         const tl = gsap.timeline({
-            defaults: { ease: "power2.inOut" },
             onComplete: finishIntro
         });
 
-        /* ──────────────────────────────────────────────
-           PHASE 1 (0.2 s): Both rings fly in from sides
-           Gold ring from left, Sage ring from right.
-        ──────────────────────────────────────────────── */
-        tl.to(gRingLeft, {
+        // 1. Reveal H·D monogram logo emblem centered amidst snowfall
+        tl.to(logoWrap, {
             opacity: 1,
             scale: 1,
-            duration: 0.55,
-            ease: "sine.out"
-        }, 0.1);
+            y: 0,
+            duration: 1.4,
+            ease: "power3.out"
+        }, 0.3);
 
-        tl.to(gRingRight, {
-            opacity: 1,
-            scale: 1,
-            duration: 0.55,
-            ease: "sine.out"
-        }, 0.1);
-
-        tl.to(gRingRightFront, {
-            scale: 1,
-            duration: 0.55,
-            ease: "sine.out"
-        }, 0.1);
-
-        // Front-arc travels with the right ring (opacity still 0)
-        tl.to(gRingLeft, {
-            keyframes: [
-                { x: -126, y: -18, rotation: -14, duration: 0.42, ease: "sine.inOut" },
-                { x: -48, y: -44, rotation: 12, duration: 0.48, ease: "sine.inOut" },
-                { x: 0, y: 0, rotation: 0, duration: 0.62, ease: "back.out(1.15)" }
-            ]
-        }, 0.28);
-
-        tl.to([gRingRight, gRingRightFront], {
-            keyframes: [
-                { x: 126, y: 18, rotation: 14, duration: 0.42, ease: "sine.inOut" },
-                { x: 48, y: 44, rotation: -12, duration: 0.48, ease: "sine.inOut" },
-                { x: 0, y: 0, rotation: 0, duration: 0.62, ease: "back.out(1.15)" }
-            ]
-        }, 0.28);
-
-        /* ──────────────────────────────────────────────
-           PHASE 2 (1.45 s): Rings interlock.
-           The front arc (right ring clipped to left-ring
-           area) fades in, creating the linked-rings look.
-        ──────────────────────────────────────────────── */
-        tl.to(gRingRightFront, {
-            opacity: 1,
-            duration: 0.55, ease: "power2.out"
-        }, 1.45);
-
-        /* ──────────────────────────────────────────────
-           PHASE 3 (2.0 – 2.5 s): Admire the interlock.
-           Brief hold — no animation.
-        ──────────────────────────────────────────────── */
-
-        /* ──────────────────────────────────────────────
-           PHASE 4 (2.5 s): Rings dissolve.
-        ──────────────────────────────────────────────── */
-        tl.to([gRingLeft, gRingRight, gRingRightFront], {
-            scaleX: 1.18,
-            scaleY: 0.82,
-            duration: 0.55,
+        // 2. Gentle breathing pulse while snow falls around it
+        tl.to(logoWrap, {
+            scale: 1.03,
+            duration: 1.8,
             ease: "sine.inOut"
-        }, 2.0);
+        }, 1.7);
 
-        tl.to(gRingLeft, {
-            x: 38,
-            opacity: 0.28,
-            duration: 0.72,
-            ease: "power2.inOut"
-        }, 2.12);
-
-        tl.to([gRingRight, gRingRightFront], {
-            x: -38,
-            opacity: 0.28,
-            duration: 0.72,
-            ease: "power2.inOut"
-        }, 2.12);
-
-        /* ──────────────────────────────────────────────
-           PHASE 5 (2.6 s): Infinity path draws itself.
-           Stroke-dashoffset animates from pathLen → 0.
-        ──────────────────────────────────────────────── */
-        tl.to(infinityPath, {
-            opacity: 1,
-            scale: 1,
-            strokeDashoffset: 0,
-            duration: 1.5, ease: "power2.inOut"
-        }, 2.15);
-
-        tl.to([gRingLeft, gRingRight, gRingRightFront], {
-            opacity: 0,
-            duration: 0.45, ease: "power1.in"
-        }, 2.75);
-
-        /* ──────────────────────────────────────────────
-           PHASE 6 (3.8 s): Glow pulse on infinity.
-        ──────────────────────────────────────────────── */
-        tl.call(() => { infinityPath.classList.add("glowing"); }, [], 3.72);
-        tl.to(infinityPath, {
-            attr: { "stroke-width": 24 },
-            duration: 0.34, ease: "sine.out",
-            yoyo: true, repeat: 1
-        }, 3.72);
-
-        /* ──────────────────────────────────────────────
-           PHASE 7 (4.05 s): H·D logo rises into view.
-        ──────────────────────────────────────────────── */
-        tl.call(() => { if (logoWrap) logoWrap.classList.add("visible"); }, [], 4.05);
-
-        /* ──────────────────────────────────────────────
-           PHASE 8: Hold, then trigger onComplete → exit.
-        ──────────────────────────────────────────────── */
-        tl.to({}, { duration: 2.0 });
+        // 3. Pause briefly to enjoy snowfall before fading into main site
+        tl.to({}, { duration: 1.2 });
     }
 
-    runInfinityIntro();
+    runSnowfallLogoIntro();
 
 
 
