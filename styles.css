@@ -1063,11 +1063,11 @@ a {
    FOOTER SECTION
 -----------------------------------------------------------------*/
 .footer {
-    background-color: var(--color-text-main);
-    color: var(--bg-primary);
+    background-color: var(--bg-secondary);
+    color: var(--color-text-main);
     padding: 5rem 2rem;
     text-align: center;
-    border-top: 1px solid rgba(197, 160, 89, 0.15);
+    border-top: 1px solid var(--border-color);
 }
 
 .footer-logo {
@@ -1075,7 +1075,7 @@ a {
     font-size: 2.2rem;
     font-weight: 300;
     letter-spacing: 0.15em;
-    color: var(--color-gold-light);
+    color: var(--color-gold);
     margin-bottom: 1.5rem;
 }
 
@@ -1083,7 +1083,7 @@ a {
     font-family: var(--font-serif);
     font-size: 1.5rem;
     letter-spacing: 0.05em;
-    color: var(--color-gold-light);
+    color: var(--color-text-muted);
     line-height: 1.6;
     font-weight: 300;
 }
@@ -1220,13 +1220,13 @@ a {
     display: flex;
     align-items: center;
     gap: 0.6rem;
-    background: rgba(255, 255, 255, 0.85);
+    background: var(--bg-card);
     backdrop-filter: blur(12px);
     -webkit-backdrop-filter: blur(12px);
-    border: 1px solid rgba(224, 199, 151, 0.4);
+    border: 1px solid var(--border-color);
     padding: 0.65rem 1.2rem;
     border-radius: 50px;
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
     cursor: pointer;
     transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
     color: var(--color-text-main);
@@ -1238,8 +1238,8 @@ a {
 
 .music-toggle-btn:hover {
     transform: translateY(-2px);
-    background: rgba(255, 255, 255, 0.98);
-    box-shadow: 0 14px 30px rgba(125, 140, 119, 0.2);
+    background: var(--bg-secondary);
+    box-shadow: 0 14px 30px rgba(0, 0, 0, 0.2);
     border-color: var(--color-gold);
 }
 
@@ -1271,9 +1271,13 @@ a {
 
 .music-waves .bar {
     width: 3px;
-    background-color: #FFFFFF;
+    background-color: var(--color-gold);
     border-radius: 3px;
     animation: soundWave 1.2s ease-in-out infinite alternate;
+}
+
+.music-toggle-btn.playing .music-waves .bar {
+    background-color: #FFFFFF;
 }
 
 .music-waves .bar1 { height: 60%; animation-delay: 0.1s; }
@@ -1310,13 +1314,13 @@ a {
     display: flex;
     align-items: center;
     gap: 0.5rem;
-    background: rgba(255, 255, 255, 0.88);
+    background: var(--bg-card);
     backdrop-filter: blur(12px);
     -webkit-backdrop-filter: blur(12px);
-    border: 1px solid rgba(197, 160, 89, 0.4);
+    border: 1px solid var(--border-color);
     padding: 0.6rem 1.1rem;
     border-radius: 50px;
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
     cursor: pointer;
     transition: var(--transition-fast);
     font-family: var(--font-sans);
@@ -1327,8 +1331,8 @@ a {
 
 .palette-toggle-btn:hover {
     transform: translateY(-2px);
-    background: #FFFFFF;
-    box-shadow: 0 12px 28px rgba(0, 0, 0, 0.12);
+    background: var(--bg-secondary);
+    box-shadow: 0 12px 28px rgba(0, 0, 0, 0.22);
 }
 
 .palette-panel {
