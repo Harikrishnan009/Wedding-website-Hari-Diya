@@ -41,49 +41,6 @@ html {
 body {
     font-family: var(--font-sans);
     line-height: 1.6;
-/* ----------------------------------------------------------------
-   DESIGN SYSTEM & VARIABLES
------------------------------------------------------------------*/
-:root {
-    --bg-primary: #FAF8F5;
-    --bg-secondary: #F4F1EA;
-    --bg-card: #FFFFFF;
-    --bg-navbar: rgba(250, 248, 245, 0.95);
-    --border-color: rgba(197, 160, 89, 0.25);
-    --color-sage: #7D8C77;
-    --color-sage-light: #A3B19B;
-    --color-sage-dark: #586453;
-    --color-gold: #C5A059;
-    --color-gold-light: #E0C797;
-    --color-text-main: #2C3539;
-    --color-text-muted: #6B7280;
-    --font-serif: 'Cormorant Garamond', serif;
-    --font-sans: 'Montserrat', sans-serif;
-    --font-script: 'Alex Brush', cursive;
-    --transition-smooth: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
-    --transition-fast: all 0.3s ease;
-}
-
-/* ----------------------------------------------------------------
-   BASE STYLES
------------------------------------------------------------------*/
-* {
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
-}
-
-html {
-    scroll-behavior: smooth;
-    font-size: 16px;
-    background-color: var(--bg-primary);
-    color: var(--color-text-main);
-    overflow-x: hidden;
-}
-
-body {
-    font-family: var(--font-sans);
-    line-height: 1.6;
     -webkit-font-smoothing: antialiased;
     overflow-x: hidden;
 }
