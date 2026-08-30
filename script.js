@@ -418,115 +418,83 @@ document.addEventListener("DOMContentLoaded", () => {
                 canvas.width = w;
                 canvas.height = h;
 
-                // Background: Parchment Paper
-                const bgGradient = ctx.createLinearGradient(0, 0, w, h);
-                bgGradient.addColorStop(0, "#fcf7f2");
-                bgGradient.addColorStop(0.5, "#f5eee4");
-                bgGradient.addColorStop(1, "#f2eadf");
-                ctx.fillStyle = bgGradient;
-                ctx.fillRect(0, 0, w, h);
+                const drawLetter = () => {
+                    // If guest has a photo, use it as a blurred, overlaid background
+                    if (currentPassData.photoUrl) {
+                        const bgImg = new Image();
+                        bgImg.onload = () => {
+                            // Draw photo stretched to fill canvas
+                            ctx.drawImage(bgImg, 0, 0, w, h);
+                            // Frost/darken it with a warm parchment overlay
+                            ctx.fillStyle = "rgba(252, 247, 242, 0.82)";
+                            ctx.fillRect(0, 0, w, h);
+                            drawText();
+                        };
+                        bgImg.src = currentPassData.photoUrl;
+                    } else {
+                        // Plain parchment background
+                        const bgGradient = ctx.createLinearGradient(0, 0, w, h);
+                        bgGradient.addColorStop(0, "#fcf7f2");
+                        bgGradient.addColorStop(0.5, "#f5eee4");
+                        bgGradient.addColorStop(1, "#f2eadf");
+                        ctx.fillStyle = bgGradient;
+                        ctx.fillRect(0, 0, w, h);
+                        drawText();
+                    }
+                };
 
-                // Subtle Border
-                ctx.strokeStyle = "#e3dccf";
-                ctx.lineWidth = 2;
-                ctx.strokeRect(20, 20, w - 40, h - 40);
+                const drawText = () => {
+                    // Subtle Border
+                    ctx.strokeStyle = "#e3dccf";
+                    ctx.lineWidth = 2;
+                    ctx.strokeRect(20, 20, w - 40, h - 40);
 
-                // Header Date
-                ctx.fillStyle = "#8c8273";
-                ctx.font = "400 18px 'Montserrat', sans-serif";
-                ctx.textAlign = "right";
-                ctx.fillText("January 24th, 2027", w - 50, 80);
+                    // Header Date
+                    ctx.fillStyle = "#8c8273";
+                    ctx.font = "400 18px 'Montserrat', sans-serif";
+                    ctx.textAlign = "right";
+                    ctx.fillText("January 24th, 2027", w - 50, 80);
 
-                // Separator Line
-                ctx.beginPath();
-                ctx.moveTo(w - 230, 100);
-                ctx.lineTo(w - 50, 100);
-                ctx.strokeStyle = "rgba(197, 160, 89, 0.4)";
-                ctx.stroke();
+                    // Separator Line
+                    ctx.beginPath();
+                    ctx.moveTo(w - 230, 100);
+                    ctx.lineTo(w - 50, 100);
+                    ctx.strokeStyle = "rgba(197, 160, 89, 0.4)";
+                    ctx.stroke();
 
-                // Greeting
-                ctx.fillStyle = "#3b3631";
-                ctx.font = "400 64px 'Alex Brush', cursive";
-                ctx.textAlign = "left";
-                ctx.fillText(`Dear ${currentPassData.name},`, 60, 200);
+                    // Greeting
+                    ctx.fillStyle = "#3b3631";
+                    ctx.font = "400 64px 'Alex Brush', cursive";
+                    ctx.textAlign = "left";
+                    ctx.fillText(`Dear ${currentPassData.name},`, 60, 200);
 
-                // Body Text Layout
-                ctx.fillStyle = "#4a453f";
-                ctx.font = "400 32px 'Cormorant Garamond', serif";
-                const line1 = "We are so incredibly thrilled that you will";
-                const line2 = "be joining us to celebrate our wedding";
-                const line3 = "reception. Your presence means the world";
-                const line4 = "to us, and we can't wait to share this";
-                const line5 = "magical evening with you!";
-                
-                ctx.fillText(line1, 60, 280);
-                ctx.fillText(line2, 60, 330);
-                ctx.fillText(line3, 60, 380);
-                ctx.fillText(line4, 60, 430);
-                ctx.fillText(line5, 60, 480);
+                    // Body Text
+                    ctx.fillStyle = "#4a453f";
+                    ctx.font = "400 32px 'Cormorant Garamond', serif";
+                    ctx.fillText("We are so incredibly thrilled that you will", 60, 300);
+                    ctx.fillText("be joining us to celebrate our wedding", 60, 350);
+                    ctx.fillText("reception. Your presence means the world", 60, 400);
+                    ctx.fillText("to us, and we can't wait to share this", 60, 450);
+                    ctx.fillText("magical evening with you!", 60, 500);
 
-                // Guest Info
-                ctx.fillStyle = "#8c8273";
-                ctx.font = "italic 400 24px 'Cormorant Garamond', serif";
-                ctx.textAlign = "center";
-                ctx.fillText(`(Confirmed for ${currentPassData.guests === "0" ? "0" : currentPassData.guests} Guest${currentPassData.guests === "1" ? "" : "s"})`, w / 2, 570);
+                    // Sign off
+                    ctx.fillStyle = "#4a453f";
+                    ctx.font = "italic 400 32px 'Cormorant Garamond', serif";
+                    ctx.textAlign = "right";
+                    ctx.fillText("With all our love,", w - 80, 680);
 
-                // Sign off
-                ctx.fillStyle = "#4a453f";
-                ctx.font = "italic 400 32px 'Cormorant Garamond', serif";
-                ctx.textAlign = "right";
-                ctx.fillText("With all our love,", w - 80, 680);
-                
-                ctx.fillStyle = "#C5A059";
-                ctx.font = "400 80px 'Alex Brush', cursive";
-                ctx.fillText("Hari & Diya", w - 60, 770);
+                    ctx.fillStyle = "#C5A059";
+                    ctx.font = "400 80px 'Alex Brush', cursive";
+                    ctx.fillText("Hari & Diya", w - 60, 770);
 
-                // Wax Seal
-                const sealX = w / 2;
-                const sealY = 820;
-                
-                // Seal Shadow
-                ctx.beginPath();
-                ctx.arc(sealX, sealY + 4, 42, 0, Math.PI * 2);
-                ctx.fillStyle = "rgba(0,0,0,0.2)";
-                ctx.fill();
+                    // Trigger Download
+                    const link = document.createElement("a");
+                    link.download = `Hari_Diya_Wedding_Note_${currentPassData.name.replace(/\s+/g, '_')}.png`;
+                    link.href = canvas.toDataURL("image/png");
+                    link.click();
+                };
 
-                // Seal Base
-                ctx.beginPath();
-                ctx.arc(sealX, sealY, 42, 0, Math.PI * 2);
-                const sealGradient = ctx.createRadialGradient(sealX - 10, sealY - 10, 5, sealX, sealY, 45);
-                sealGradient.addColorStop(0, "#c42a2a");
-                sealGradient.addColorStop(1, "#7c0b0b");
-                ctx.fillStyle = sealGradient;
-                ctx.fill();
-                
-                // Seal Ring
-                ctx.beginPath();
-                ctx.arc(sealX, sealY, 36, 0, Math.PI * 2);
-                ctx.strokeStyle = "rgba(255,255,255,0.15)";
-                ctx.lineWidth = 1.5;
-                ctx.stroke();
-
-                // Seal Text
-                ctx.fillStyle = "#e59999";
-                ctx.font = "600 28px 'Cormorant Garamond', serif";
-                ctx.textAlign = "center";
-                ctx.textBaseline = "middle";
-                
-                // Text Shadow
-                ctx.save();
-                ctx.shadowColor = "rgba(0,0,0,0.4)";
-                ctx.shadowBlur = 2;
-                ctx.shadowOffsetX = -1;
-                ctx.shadowOffsetY = -1;
-                ctx.fillText("H&D", sealX, sealY + 2);
-                ctx.restore();
-
-                // Trigger Download
-                const link = document.createElement("a");
-                link.download = `Hari_Diya_Wedding_Note_${currentPassData.name.replace(/\s+/g, '_')}.png`;
-                link.href = canvas.toDataURL("image/png");
-                link.click();
+                drawLetter();
             });
         });
     }

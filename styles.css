@@ -1183,14 +1183,6 @@ a {
     text-align: justify;
 }
 
-#passGuestDetails {
-    font-style: italic;
-    color: #8c8273;
-    font-size: 1.1rem;
-    text-align: center;
-    margin-top: -0.5rem;
-}
-
 .letter-sign-off {
     margin-top: 1.5rem;
     text-align: right;
@@ -1213,41 +1205,7 @@ a {
     line-height: 1;
 }
 
-.letter-wax-seal {
-    position: absolute;
-    bottom: -25px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 60px;
-    height: 60px;
-    background: radial-gradient(circle at 30% 30%, #b91d1d, #7c0b0b);
-    border-radius: 50%;
-    box-shadow: 
-        inset -3px -3px 6px rgba(0,0,0,0.4), 
-        inset 3px 3px 6px rgba(255,255,255,0.3),
-        0 4px 10px rgba(0,0,0,0.3);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 10;
-}
 
-.letter-wax-seal::before {
-    content: '';
-    position: absolute;
-    top: 2px; left: 2px; right: 2px; bottom: 2px;
-    border-radius: 50%;
-    border: 1px solid rgba(255,255,255,0.1);
-}
-
-.wax-seal-inner {
-    font-family: var(--font-serif);
-    color: #e59999;
-    font-size: 1.2rem;
-    font-weight: 600;
-    letter-spacing: 0.1em;
-    text-shadow: -1px -1px 0 rgba(0,0,0,0.3), 1px 1px 0 rgba(255,255,255,0.2);
-}
 
 .pass-actions {
     display: flex;
