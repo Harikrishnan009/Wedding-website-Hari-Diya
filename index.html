@@ -274,11 +274,11 @@
                 <div class="rsvp-wrapper">
                     <div class="section-header">
                         <p class="subtitle">Be Our Guest</p>
-                        <h2 class="section-title">RSVP & Entry Pass</h2>
+                        <h2 class="section-title">RSVP</h2>
                         <div class="divider">
                             <span class="leaf-icon">✿</span>
                         </div>
-                        <p class="rsvp-helper-text">Kindly respond to confirm your attendance and generate your custom souvenir wedding pass!</p>
+                        <p class="rsvp-helper-text">Kindly respond to let us know if you'll be joining us on our special evening!</p>
                     </div>
                     
                     <form id="rsvpForm" class="rsvp-form">
@@ -321,7 +321,7 @@
                         </div>
                         
                         <button type="submit" class="btn btn-sage rsvp-submit" id="submitBtn">
-                            <span class="btn-text">Submit RSVP & Get Pass 🎟️</span>
+                            <span class="btn-text">Submit RSVP ✉️</span>
                             <span class="spinner hidden"></span>
                         </button>
                         
@@ -344,7 +344,7 @@
                         </div>
                         <h3 class="letter-greeting">Dear <span id="passGuestName">Guest</span>,</h3>
                         
-                        <p class="letter-body">
+                        <p class="letter-body" id="letterBodyText">
                             We are so incredibly thrilled that you will be joining us to celebrate our wedding reception. Your presence means the world to us, and we can't wait to share this magical evening with you!
                         </p>
 
@@ -362,7 +362,7 @@
                             <polyline points="7 10 12 15 17 10"/>
                             <line x1="12" y1="15" x2="12" y2="3"/>
                         </svg>
-                        <span>Download Pass Card (PNG)</span>
+                        <span>Download Letter (PNG)</span>
                     </button>
                     <button id="printPassBtn" class="btn btn-sage btn-outline">
                         <span>Print Pass 🖨️</span>

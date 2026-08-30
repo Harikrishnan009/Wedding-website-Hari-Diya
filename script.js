@@ -328,14 +328,16 @@ document.addEventListener("DOMContentLoaded", () => {
 
             // Populate Modal Content
             if (passGuestName) passGuestName.textContent = nameVal;
-            if (passGuestStatus) {
-                passGuestStatus.textContent = attendanceVal === "No" ? "Declined" : "Confirmed";
-                passGuestStatus.className = attendanceVal === "No" ? "ticket-status-badge status-declined" : "ticket-status-badge";
+
+            // Swap letter body text based on attendance
+            const letterBodyEl = document.getElementById("letterBodyText");
+            if (letterBodyEl) {
+                if (attendanceVal === "No") {
+                    letterBodyEl.textContent = "We completely understand, and we so appreciate you letting us know. Though we'll miss you dearly on this special evening, know that you are always in our hearts. We hope to celebrate with you soon!";
+                } else {
+                    letterBodyEl.textContent = "We are so incredibly thrilled that you will be joining us to celebrate our wedding reception. Your presence means the world to us, and we can't wait to share this magical evening with you!";
+                }
             }
-            if (passGuestCount) {
-                passGuestCount.textContent = attendanceVal === "No" ? "0 Guests" : (guestsVal + (parseInt(guestsVal) === 1 ? " Guest" : " Guests"));
-            }
-            if (passTicketId) passTicketId.textContent = "#" + randomId;
 
             // Handle Avatar Display
             if (currentPhotoDataUrl && passAvatarImg) {
@@ -375,7 +377,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
             // Reset form button state
             submitBtn.disabled = false;
-            btnText.textContent = "Submit RSVP & Get Pass 🎟️";
+            btnText.textContent = "Submit RSVP ✉️";
             spinner.classList.add("hidden");
         });
     }
@@ -468,14 +470,13 @@ document.addEventListener("DOMContentLoaded", () => {
                     ctx.textAlign = "left";
                     ctx.fillText(`Dear ${currentPassData.name},`, 60, 200);
 
-                    // Body Text
+                    // Body Text (attendance-aware)
                     ctx.fillStyle = "#4a453f";
                     ctx.font = "400 32px 'Cormorant Garamond', serif";
-                    ctx.fillText("We are so incredibly thrilled that you will", 60, 300);
-                    ctx.fillText("be joining us to celebrate our wedding", 60, 350);
-                    ctx.fillText("reception. Your presence means the world", 60, 400);
-                    ctx.fillText("to us, and we can't wait to share this", 60, 450);
-                    ctx.fillText("magical evening with you!", 60, 500);
+                    const bodyLines = currentPassData.attendance === "No"
+                        ? ["We completely understand, and we so", "appreciate you letting us know. Though", "we'll miss you dearly on this special", "evening, know that you are always in", "our hearts. We hope to celebrate soon!"]
+                        : ["We are so incredibly thrilled that you will", "be joining us to celebrate our wedding", "reception. Your presence means the world", "to us, and we can't wait to share this", "magical evening with you!"];
+                    bodyLines.forEach((line, i) => ctx.fillText(line, 60, 300 + i * 50));
 
                     // Sign off
                     ctx.fillStyle = "#4a453f";
