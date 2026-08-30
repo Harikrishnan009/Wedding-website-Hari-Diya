@@ -210,7 +210,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const timerInterval = setInterval(updateCountdown, 1000);
 
     // ==========================================
-    // 5. RSVP FORM HANDLING WITH GOOGLE SPREADSHEET
+    // 5. RSVP FORM HANDLING, PHOTO UPLOAD & WEDDING PASS GENERATION
     // ==========================================
     const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwZF3U-GPPNXEUIxkT7wYOV9YBBx4zyO60eTZdyDwHquoWB1detY9VdCVoH98BNdARdvA/exec";
     const rsvpForm = document.getElementById("rsvpForm");
@@ -220,6 +220,39 @@ document.addEventListener("DOMContentLoaded", () => {
     const btnText = submitBtn.querySelector(".btn-text");
     const spinner = submitBtn.querySelector(".spinner");
     const formFeedback = document.getElementById("formFeedback");
+
+    // Photo Upload Handling
+    const guestPhotoInput = document.getElementById("guestPhoto");
+    const photoDropZone = document.getElementById("photoDropZone");
+    const photoPlaceholder = document.getElementById("photoPlaceholder");
+    const guestPhotoPreview = document.getElementById("guestPhotoPreview");
+    let currentPhotoDataUrl = null;
+
+    if (guestPhotoInput && photoDropZone) {
+        photoDropZone.addEventListener("click", () => guestPhotoInput.click());
+
+        guestPhotoInput.addEventListener("change", (e) => {
+            const file = e.target.files[0];
+            if (file) {
+                if (file.size > 10 * 1024 * 1024) {
+                    alert("Please select an image smaller than 10MB.");
+                    return;
+                }
+                const reader = new FileReader();
+                reader.onload = (event) => {
+                    currentPhotoDataUrl = event.target.result;
+                    if (guestPhotoPreview) {
+                        guestPhotoPreview.src = currentPhotoDataUrl;
+                        guestPhotoPreview.classList.remove("hidden");
+                    }
+                    if (photoPlaceholder) {
+                        photoPlaceholder.classList.add("hidden");
+                    }
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+    }
 
     // Show/hide number of guests depending on attendance option
     if (guestAttendance && guestsCountGroup) {
@@ -234,45 +267,310 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 
+    // Pass Modal Elements
+    const passModal = document.getElementById("passModal");
+    const closePassModalBtn = document.getElementById("closePassModal");
+    const downloadPassBtn = document.getElementById("downloadPassBtn");
+    const printPassBtn = document.getElementById("printPassBtn");
+    const passGuestName = document.getElementById("passGuestName");
+    const passGuestStatus = document.getElementById("passGuestStatus");
+    const passGuestCount = document.getElementById("passGuestCount");
+    const passTicketId = document.getElementById("passTicketId");
+    const passAvatarImg = document.getElementById("passAvatarImg");
+    const passAvatarFallback = document.getElementById("passAvatarFallback");
+    const passAvatarInitials = document.getElementById("passAvatarInitials");
+    const qrcodeContainer = document.getElementById("qrcode");
+
+    let currentPassData = null;
+
     if (rsvpForm) {
         rsvpForm.addEventListener("submit", async (e) => {
             e.preventDefault();
 
             // Set loading state
             submitBtn.disabled = true;
-            btnText.textContent = "Sending...";
+            btnText.textContent = "Generating Pass...";
             spinner.classList.remove("hidden");
             formFeedback.classList.add("hidden");
             formFeedback.className = "form-feedback"; // reset classes
 
             const formData = new FormData(rsvpForm);
+            const nameVal = formData.get("name") || "Valued Guest";
+            const attendanceVal = formData.get("attendance") || "Yes";
+            const guestsVal = formData.get("guests") || "1";
+            const randomId = "HD-2027-" + Math.floor(1000 + Math.random() * 9000);
 
-            try {
-                // Actual submission to Google Sheets webapp URL
-                const response = await fetch(GOOGLE_SCRIPT_URL, {
-                    method: "POST",
-                    mode: "no-cors", // Required to submit cross-origin to Google Script
-                    headers: {
-                        "Content-Type": "application/json"
-                    },
-                    body: JSON.stringify(Object.fromEntries(formData))
+            currentPassData = {
+                name: nameVal,
+                attendance: attendanceVal,
+                guests: attendanceVal === "No" ? "0" : guestsVal,
+                ticketId: randomId,
+                photoUrl: currentPhotoDataUrl
+            };
+
+            // Fire Google script in background (non-blocking for quick modal feedback)
+            fetch(GOOGLE_SCRIPT_URL, {
+                method: "POST",
+                mode: "no-cors",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(Object.fromEntries(formData))
+            }).catch(err => console.error("RSVP sync notice:", err));
+
+            // Trigger Confetti Celebration!
+            if (typeof confetti === "function") {
+                confetti({
+                    particleCount: 90,
+                    spread: 70,
+                    origin: { y: 0.6 },
+                    colors: ['#C5A059', '#7D8C77', '#E0C797', '#ffffff']
                 });
+            }
 
-                formFeedback.classList.remove("hidden");
-                formFeedback.classList.add("success");
-                formFeedback.textContent = "Thank you! Your response has been logged successfully.";
-                rsvpForm.reset();
-                if (guestsCountGroup) guestsCountGroup.style.display = "flex";
-            } catch (error) {
-                console.error("Error submitting RSVP:", error);
-                formFeedback.classList.remove("hidden");
-                formFeedback.classList.add("error");
-                formFeedback.textContent = "Oops! Something went wrong. Please try again or contact us directly.";
-            } finally {
-                // Reset button state
-                submitBtn.disabled = false;
-                btnText.textContent = "Submit RSVP";
-                spinner.classList.add("hidden");
+            // Populate Modal Content
+            if (passGuestName) passGuestName.textContent = nameVal;
+            if (passGuestStatus) {
+                passGuestStatus.textContent = attendanceVal === "No" ? "Declined" : "Confirmed";
+                passGuestStatus.className = attendanceVal === "No" ? "ticket-status-badge status-declined" : "ticket-status-badge";
+            }
+            if (passGuestCount) {
+                passGuestCount.textContent = attendanceVal === "No" ? "0 Guests" : (guestsVal + (parseInt(guestsVal) === 1 ? " Guest" : " Guests"));
+            }
+            if (passTicketId) passTicketId.textContent = "#" + randomId;
+
+            // Handle Avatar Display
+            if (currentPhotoDataUrl && passAvatarImg) {
+                passAvatarImg.src = currentPhotoDataUrl;
+                passAvatarImg.classList.remove("hidden");
+                if (passAvatarFallback) passAvatarFallback.classList.add("hidden");
+            } else {
+                if (passAvatarImg) passAvatarImg.classList.add("hidden");
+                if (passAvatarFallback) passAvatarFallback.classList.remove("hidden");
+                // Initials
+                const parts = nameVal.trim().split(" ");
+                const initials = parts.length > 1 ? (parts[0][0] + parts[parts.length - 1][0]).toUpperCase() : parts[0].substring(0, 2).toUpperCase();
+                if (passAvatarInitials) passAvatarInitials.textContent = initials || "HD";
+            }
+
+            // Generate QR Code
+            if (qrcodeContainer) {
+                qrcodeContainer.innerHTML = "";
+                const qrText = `Hari & Diya Wedding Pass | Name: ${nameVal} | Guests: ${guestsVal} | ID: ${randomId}`;
+                if (typeof QRCode !== "undefined") {
+                    new QRCode(qrcodeContainer, {
+                        text: qrText,
+                        width: 90,
+                        height: 90,
+                        colorDark: "#2C3539",
+                        colorLight: "#FFFFFF",
+                        correctLevel: QRCode.CorrectLevel.H
+                    });
+                }
+            }
+
+            // Reveal Modal smoothly
+            if (passModal) {
+                passModal.classList.remove("hidden");
+                passModal.classList.add("active");
+            }
+
+            // Reset form button state
+            submitBtn.disabled = false;
+            btnText.textContent = "Submit RSVP & Get Pass 🎟️";
+            spinner.classList.add("hidden");
+        });
+    }
+
+    // Modal Close Logic
+    const closePassModal = () => {
+        if (passModal) {
+            passModal.classList.remove("active");
+            passModal.classList.add("hidden");
+        }
+    };
+
+    if (closePassModalBtn) {
+        closePassModalBtn.addEventListener("click", closePassModal);
+    }
+    if (passModal) {
+        passModal.addEventListener("click", (e) => {
+            if (e.target === passModal) closePassModal();
+        });
+    }
+
+    // Print Pass
+    if (printPassBtn) {
+        printPassBtn.addEventListener("click", () => {
+            window.print();
+        });
+    }
+
+    // Canvas Download Function: Renders Pass as high-res PNG Image
+    if (downloadPassBtn) {
+        downloadPassBtn.addEventListener("click", () => {
+            if (!currentPassData) return;
+
+            const canvas = document.createElement("canvas");
+            const ctx = canvas.getContext("2d");
+            const w = 750;
+            const h = 1000;
+            canvas.width = w;
+            canvas.height = h;
+
+            // Background
+            const bgGradient = ctx.createLinearGradient(0, 0, 0, h);
+            bgGradient.addColorStop(0, "#FAF8F5");
+            bgGradient.addColorStop(1, "#F4F1EA");
+            ctx.fillStyle = bgGradient;
+            ctx.fillRect(0, 0, w, h);
+
+            // Card Gold Border & Corner Accents
+            ctx.strokeStyle = "#C5A059";
+            ctx.lineWidth = 4;
+            ctx.strokeRect(20, 20, w - 40, h - 40);
+
+            ctx.strokeStyle = "rgba(197, 160, 89, 0.4)";
+            ctx.lineWidth = 1;
+            ctx.strokeRect(28, 28, w - 56, h - 56);
+
+            // Header Banner
+            ctx.fillStyle = "#7D8C77";
+            ctx.fillRect(28, 28, w - 56, 110);
+
+            ctx.fillStyle = "#FFFFFF";
+            ctx.font = "300 32px 'Cormorant Garamond', serif";
+            ctx.textAlign = "left";
+            ctx.fillText("H & D", 50, 92);
+
+            ctx.fillStyle = "#E0C797";
+            ctx.font = "500 16px 'Montserrat', sans-serif";
+            ctx.textAlign = "right";
+            ctx.fillText("OFFICIAL WEDDING PASS", w - 50, 90);
+
+            // Couple Names Header
+            ctx.fillStyle = "#2C3539";
+            ctx.font = "300 48px 'Cormorant Garamond', serif";
+            ctx.textAlign = "center";
+            ctx.fillText("Hari & Diya", w / 2, 210);
+
+            ctx.fillStyle = "#6B7280";
+            ctx.font = "400 16px 'Montserrat', sans-serif";
+            ctx.fillText("Wedding Reception Invitation", w / 2, 242);
+
+            // Avatar Rendering
+            const avatarX = w / 2;
+            const avatarY = 360;
+            const avatarR = 75;
+
+            ctx.save();
+            ctx.beginPath();
+            ctx.arc(avatarX, avatarY, avatarR, 0, Math.PI * 2);
+            ctx.closePath();
+            ctx.clip();
+
+            if (currentPassData.photoUrl) {
+                const img = new Image();
+                img.crossOrigin = "anonymous";
+                img.onload = () => {
+                    drawPassRemaining(img);
+                };
+                img.src = currentPassData.photoUrl;
+                ctx.restore();
+                return; // async wait
+            } else {
+                ctx.fillStyle = "#7D8C77";
+                ctx.fill();
+                ctx.fillStyle = "#FFFFFF";
+                ctx.font = "500 42px 'Cormorant Garamond', serif";
+                ctx.textAlign = "center";
+                ctx.textBaseline = "middle";
+                const parts = currentPassData.name.trim().split(" ");
+                const initials = parts.length > 1 ? (parts[0][0] + parts[parts.length - 1][0]).toUpperCase() : parts[0].substring(0, 2).toUpperCase();
+                ctx.fillText(initials || "HD", avatarX, avatarY);
+                ctx.restore();
+                drawPassRemaining(null);
+            }
+
+            function drawPassRemaining(avatarImg) {
+                if (avatarImg) {
+                    ctx.drawImage(avatarImg, avatarX - avatarR, avatarY - avatarR, avatarR * 2, avatarR * 2);
+                    ctx.restore();
+                }
+
+                // Avatar Golden Border
+                ctx.beginPath();
+                ctx.arc(avatarX, avatarY, avatarR + 2, 0, Math.PI * 2);
+                ctx.strokeStyle = "#C5A059";
+                ctx.lineWidth = 3;
+                ctx.stroke();
+
+                // Guest Info
+                ctx.fillStyle = "#6B7280";
+                ctx.font = "600 13px 'Montserrat', sans-serif";
+                ctx.textAlign = "center";
+                ctx.fillText("GUEST NAME", w / 2, 475);
+
+                ctx.fillStyle = "#2C3539";
+                ctx.font = "400 36px 'Cormorant Garamond', serif";
+                ctx.fillText(currentPassData.name, w / 2, 520);
+
+                // Details Row: Status & Guest Count
+                ctx.fillStyle = "#6B7280";
+                ctx.font = "600 13px 'Montserrat', sans-serif";
+                ctx.textAlign = "center";
+                ctx.fillText("ATTENDANCE: " + (currentPassData.attendance === "No" ? "Declined" : "Joyfully Attending") + "   |   GUESTS: " + (currentPassData.attendance === "No" ? "0" : currentPassData.guests), w / 2, 565);
+
+                // Dashed Separator Line
+                ctx.beginPath();
+                ctx.setLineDash([8, 6]);
+                ctx.moveTo(60, 610);
+                ctx.lineTo(w - 60, 610);
+                ctx.strokeStyle = "rgba(197, 160, 89, 0.4)";
+                ctx.stroke();
+                ctx.setLineDash([]);
+
+                // Details Grid
+                ctx.fillStyle = "#6B7280";
+                ctx.font = "600 13px 'Montserrat', sans-serif";
+                ctx.textAlign = "center";
+                ctx.fillText("DATE & TIME", w / 2, 650);
+
+                ctx.fillStyle = "#2C3539";
+                ctx.font = "400 24px 'Cormorant Garamond', serif";
+                ctx.fillText("Sunday, January 24th, 2027 • 06:00 PM", w / 2, 685);
+
+                ctx.fillStyle = "#6B7280";
+                ctx.font = "600 13px 'Montserrat', sans-serif";
+                ctx.fillText("VENUE", w / 2, 725);
+
+                ctx.fillStyle = "#2C3539";
+                ctx.font = "400 22px 'Cormorant Garamond', serif";
+                ctx.fillText("Mohamed Bagh, Palakkad, Kerala", w / 2, 755);
+
+                // QR Code Image Draw
+                const qrImg = qrcodeContainer ? qrcodeContainer.querySelector("img") : null;
+                if (qrImg && qrImg.src) {
+                    const qImg = new Image();
+                    qImg.onload = () => {
+                        ctx.drawImage(qImg, w / 2 - 50, 800, 100, 100);
+                        ctx.fillStyle = "#C5A059";
+                        ctx.font = "600 14px 'Montserrat', sans-serif";
+                        ctx.fillText("#" + currentPassData.ticketId, w / 2, 925);
+                        triggerDownload();
+                    };
+                    qImg.src = qrImg.src;
+                } else {
+                    ctx.fillStyle = "#C5A059";
+                    ctx.font = "600 14px 'Montserrat', sans-serif";
+                    ctx.fillText("#" + currentPassData.ticketId, w / 2, 910);
+                    triggerDownload();
+                }
+
+                function triggerDownload() {
+                    const link = document.createElement("a");
+                    link.download = `Hari_Diya_Wedding_Pass_${currentPassData.name.replace(/\s+/g, '_')}.png`;
+                    link.href = canvas.toDataURL("image/png");
+                    link.click();
+                }
             }
         });
     }
