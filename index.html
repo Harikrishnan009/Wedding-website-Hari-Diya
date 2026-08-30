@@ -358,70 +358,29 @@
             <div class="pass-modal-container">
                 <button id="closePassModal" class="modal-close" aria-label="Close pass">&times;</button>
                 
-                <div class="ticket-card" id="ticketCardToSave">
-                    <div class="ticket-top-banner">
-                        <div class="ticket-emblem">H & D</div>
-                        <div class="ticket-badge">OFFICIAL WEDDING PASS</div>
+                <div class="letter-card" id="ticketCardToSave">
+                    <div class="letter-content">
+                        <div class="letter-header">
+                            <span class="letter-date">January 24th, 2027</span>
+                        </div>
+                        <h3 class="letter-greeting">Dear <span id="passGuestName">Guest</span>,</h3>
+                        
+                        <p class="letter-body">
+                            We are so incredibly thrilled that you will be joining us to celebrate our wedding reception. Your presence means the world to us, and we can't wait to share this magical evening with you!
+                        </p>
+                        
+                        <p class="letter-body" id="passGuestDetails">
+                            (Confirmed for <span id="passGuestCount">1 Guest</span>)
+                        </p>
+
+                        <div class="letter-sign-off">
+                            <p>With all our love,</p>
+                            <h2 class="letter-signatures">Hari & Diya</h2>
+                        </div>
                     </div>
                     
-                    <div class="ticket-main">
-                        <div class="ticket-header">
-                            <h2 class="ticket-couple-names">Hari & Diya</h2>
-                            <p class="ticket-sub">Wedding Reception Invitation</p>
-                        </div>
-                        
-                        <div class="ticket-guest-section">
-                            <div class="ticket-avatar-frame">
-                                <img id="passAvatarImg" src="" alt="Guest Avatar" class="ticket-avatar-img hidden">
-                                <div id="passAvatarFallback" class="ticket-avatar-fallback">
-                                    <span id="passAvatarInitials">HD</span>
-                                </div>
-                            </div>
-                            
-                            <div class="ticket-guest-info">
-                                <div class="ticket-field">
-                                    <span class="ticket-label">GUEST NAME</span>
-                                    <h3 id="passGuestName" class="ticket-val-name">Guest Name</h3>
-                                </div>
-                                <div class="ticket-field-row">
-                                    <div class="ticket-field">
-                                        <span class="ticket-label">STATUS</span>
-                                        <span id="passGuestStatus" class="ticket-status-badge">Confirmed</span>
-                                    </div>
-                                    <div class="ticket-field">
-                                        <span class="ticket-label">GUESTS</span>
-                                        <span id="passGuestCount" class="ticket-val">1 Guest</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="ticket-divider-line">
-                            <div class="notch notch-left"></div>
-                            <div class="notch notch-right"></div>
-                        </div>
-
-                        <div class="ticket-details-grid">
-                            <div class="ticket-detail-item">
-                                <span class="ticket-label">DATE & TIME</span>
-                                <strong class="ticket-val-sm">Jan 24, 2027 • 06:00 PM</strong>
-                            </div>
-                            <div class="ticket-detail-item">
-                                <span class="ticket-label">VENUE</span>
-                                <strong class="ticket-val-sm">Mohamed Bagh, Palakkad</strong>
-                            </div>
-                        </div>
-
-                        <div class="ticket-footer-row">
-                            <div class="ticket-qr-box">
-                                <div id="qrcode"></div>
-                                <span class="qr-code-id" id="passTicketId">#HD-2027-8942</span>
-                            </div>
-                            <div class="ticket-note">
-                                <p class="ticket-wish-quote">"Celebrating love & togetherness"</p>
-                                <span class="ticket-scan-tip">Scan at reception check-in desk</span>
-                            </div>
-                        </div>
+                    <div class="letter-wax-seal">
+                        <div class="wax-seal-inner">H&D</div>
                     </div>
                 </div>
 

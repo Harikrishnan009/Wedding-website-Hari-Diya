@@ -404,182 +404,130 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 
-    // Canvas Download Function: Renders Pass as high-res PNG Image
+            // Canvas Download Function: Renders Letter as high-res PNG Image
     if (downloadPassBtn) {
         downloadPassBtn.addEventListener("click", () => {
             if (!currentPassData) return;
 
-            const canvas = document.createElement("canvas");
-            const ctx = canvas.getContext("2d");
-            const w = 750;
-            const h = 1000;
-            canvas.width = w;
-            canvas.height = h;
+            // Wait for cursive font to load before drawing to canvas
+            document.fonts.load('3rem "Alex Brush"').then(() => {
+                const canvas = document.createElement("canvas");
+                const ctx = canvas.getContext("2d");
+                const w = 750;
+                const h = 900;
+                canvas.width = w;
+                canvas.height = h;
 
-            // Background: Dark Premium Gradient
-            const bgGradient = ctx.createLinearGradient(0, 0, w, h);
-            bgGradient.addColorStop(0, "#1A1A1D");
-            bgGradient.addColorStop(0.5, "#2C2F33");
-            bgGradient.addColorStop(1, "#141416");
-            ctx.fillStyle = bgGradient;
-            ctx.fillRect(0, 0, w, h);
+                // Background: Parchment Paper
+                const bgGradient = ctx.createLinearGradient(0, 0, w, h);
+                bgGradient.addColorStop(0, "#fcf7f2");
+                bgGradient.addColorStop(0.5, "#f5eee4");
+                bgGradient.addColorStop(1, "#f2eadf");
+                ctx.fillStyle = bgGradient;
+                ctx.fillRect(0, 0, w, h);
 
-            // Card Gold Border & Corner Accents
-            const goldGradient = ctx.createLinearGradient(0, 0, w, h);
-            goldGradient.addColorStop(0, "#C5A059");
-            goldGradient.addColorStop(0.5, "#E0C797");
-            goldGradient.addColorStop(1, "#C5A059");
+                // Subtle Border
+                ctx.strokeStyle = "#e3dccf";
+                ctx.lineWidth = 2;
+                ctx.strokeRect(20, 20, w - 40, h - 40);
 
-            ctx.strokeStyle = goldGradient;
-            ctx.lineWidth = 4;
-            ctx.strokeRect(20, 20, w - 40, h - 40);
+                // Header Date
+                ctx.fillStyle = "#8c8273";
+                ctx.font = "400 18px 'Montserrat', sans-serif";
+                ctx.textAlign = "right";
+                ctx.fillText("January 24th, 2027", w - 50, 80);
 
-            ctx.strokeStyle = "rgba(197, 160, 89, 0.3)";
-            ctx.lineWidth = 1;
-            ctx.strokeRect(28, 28, w - 56, h - 56);
-
-            // Header Banner
-            ctx.fillStyle = "rgba(255, 255, 255, 0.05)";
-            ctx.fillRect(28, 28, w - 56, 110);
-            ctx.fillStyle = "rgba(197, 160, 89, 0.1)";
-            ctx.fillRect(28, 137, w - 56, 1); // underline
-
-            ctx.fillStyle = "#FFFFFF";
-            ctx.font = "300 32px 'Cormorant Garamond', serif";
-            ctx.textAlign = "left";
-            ctx.fillText("H & D", 50, 92);
-
-            ctx.fillStyle = "#E0C797";
-            ctx.font = "500 16px 'Montserrat', sans-serif";
-            ctx.textAlign = "right";
-            ctx.fillText("VIP WEDDING PASS", w - 50, 90);
-
-            // Couple Names Header
-            ctx.fillStyle = "#FFFFFF";
-            ctx.font = "300 48px 'Cormorant Garamond', serif";
-            ctx.textAlign = "center";
-            ctx.fillText("Hari & Diya", w / 2, 210);
-
-            ctx.fillStyle = "#A0A5AA";
-            ctx.font = "400 16px 'Montserrat', sans-serif";
-            ctx.fillText("Wedding Reception Invitation", w / 2, 242);
-
-            // Avatar Rendering
-            const avatarX = w / 2;
-            const avatarY = 360;
-            const avatarR = 75;
-
-            ctx.save();
-            ctx.beginPath();
-            ctx.arc(avatarX, avatarY, avatarR, 0, Math.PI * 2);
-            ctx.closePath();
-            ctx.clip();
-
-            if (currentPassData.photoUrl) {
-                const img = new Image();
-                img.crossOrigin = "anonymous";
-                img.onload = () => {
-                    drawPassRemaining(img);
-                };
-                img.src = currentPassData.photoUrl;
-                ctx.restore();
-                return; // async wait
-            } else {
-                ctx.fillStyle = goldGradient;
-                ctx.fill();
-                ctx.fillStyle = "#111111";
-                ctx.font = "600 42px 'Cormorant Garamond', serif";
-                ctx.textAlign = "center";
-                ctx.textBaseline = "middle";
-                const parts = currentPassData.name.trim().split(" ");
-                const initials = parts.length > 1 ? (parts[0][0] + parts[parts.length - 1][0]).toUpperCase() : parts[0].substring(0, 2).toUpperCase();
-                ctx.fillText(initials || "HD", avatarX, avatarY);
-                ctx.restore();
-                drawPassRemaining(null);
-            }
-
-            function drawPassRemaining(avatarImg) {
-                if (avatarImg) {
-                    ctx.drawImage(avatarImg, avatarX - avatarR, avatarY - avatarR, avatarR * 2, avatarR * 2);
-                    ctx.restore();
-                }
-
-                // Avatar Golden Border
+                // Separator Line
                 ctx.beginPath();
-                ctx.arc(avatarX, avatarY, avatarR + 2, 0, Math.PI * 2);
-                ctx.strokeStyle = goldGradient;
-                ctx.lineWidth = 3;
-                ctx.stroke();
-
-                // Guest Info
-                ctx.fillStyle = "#A0A5AA";
-                ctx.font = "600 13px 'Montserrat', sans-serif";
-                ctx.textAlign = "center";
-                ctx.fillText("HONORED GUEST", w / 2, 475);
-
-                ctx.fillStyle = "#FFFFFF";
-                ctx.font = "400 36px 'Cormorant Garamond', serif";
-                ctx.fillText(currentPassData.name, w / 2, 520);
-
-                // Details Row: Status & Guest Count
-                ctx.fillStyle = "#A0A5AA";
-                ctx.font = "600 13px 'Montserrat', sans-serif";
-                ctx.textAlign = "center";
-                ctx.fillText("ATTENDANCE: " + (currentPassData.attendance === "No" ? "Declined" : "Joyfully Attending") + "   |   GUESTS: " + (currentPassData.attendance === "No" ? "0" : currentPassData.guests), w / 2, 565);
-
-                // Dashed Separator Line
-                ctx.beginPath();
-                ctx.setLineDash([8, 6]);
-                ctx.moveTo(60, 610);
-                ctx.lineTo(w - 60, 610);
+                ctx.moveTo(w - 230, 100);
+                ctx.lineTo(w - 50, 100);
                 ctx.strokeStyle = "rgba(197, 160, 89, 0.4)";
                 ctx.stroke();
-                ctx.setLineDash([]);
 
-                // Details Grid
-                ctx.fillStyle = "#A0A5AA";
-                ctx.font = "600 13px 'Montserrat', sans-serif";
+                // Greeting
+                ctx.fillStyle = "#3b3631";
+                ctx.font = "400 64px 'Alex Brush', cursive";
+                ctx.textAlign = "left";
+                ctx.fillText(`Dear ${currentPassData.name},`, 60, 200);
+
+                // Body Text Layout
+                ctx.fillStyle = "#4a453f";
+                ctx.font = "400 32px 'Cormorant Garamond', serif";
+                const line1 = "We are so incredibly thrilled that you will";
+                const line2 = "be joining us to celebrate our wedding";
+                const line3 = "reception. Your presence means the world";
+                const line4 = "to us, and we can't wait to share this";
+                const line5 = "magical evening with you!";
+                
+                ctx.fillText(line1, 60, 280);
+                ctx.fillText(line2, 60, 330);
+                ctx.fillText(line3, 60, 380);
+                ctx.fillText(line4, 60, 430);
+                ctx.fillText(line5, 60, 480);
+
+                // Guest Info
+                ctx.fillStyle = "#8c8273";
+                ctx.font = "italic 400 24px 'Cormorant Garamond', serif";
                 ctx.textAlign = "center";
-                ctx.fillText("DATE & TIME", w / 2, 650);
+                ctx.fillText(`(Confirmed for ${currentPassData.guests === "0" ? "0" : currentPassData.guests} Guest${currentPassData.guests === "1" ? "" : "s"})`, w / 2, 570);
 
-                ctx.fillStyle = "#FFFFFF";
-                ctx.font = "400 24px 'Cormorant Garamond', serif";
-                ctx.fillText("Sunday, January 24th, 2027 • 06:00 PM", w / 2, 685);
+                // Sign off
+                ctx.fillStyle = "#4a453f";
+                ctx.font = "italic 400 32px 'Cormorant Garamond', serif";
+                ctx.textAlign = "right";
+                ctx.fillText("With all our love,", w - 80, 680);
+                
+                ctx.fillStyle = "#C5A059";
+                ctx.font = "400 80px 'Alex Brush', cursive";
+                ctx.fillText("Hari & Diya", w - 60, 770);
 
-                ctx.fillStyle = "#A0A5AA";
-                ctx.font = "600 13px 'Montserrat', sans-serif";
-                ctx.fillText("VENUE", w / 2, 725);
+                // Wax Seal
+                const sealX = w / 2;
+                const sealY = 820;
+                
+                // Seal Shadow
+                ctx.beginPath();
+                ctx.arc(sealX, sealY + 4, 42, 0, Math.PI * 2);
+                ctx.fillStyle = "rgba(0,0,0,0.2)";
+                ctx.fill();
 
-                ctx.fillStyle = "#FFFFFF";
-                ctx.font = "400 22px 'Cormorant Garamond', serif";
-                ctx.fillText("Mohamed Bagh, Palakkad, Kerala", w / 2, 755);
+                // Seal Base
+                ctx.beginPath();
+                ctx.arc(sealX, sealY, 42, 0, Math.PI * 2);
+                const sealGradient = ctx.createRadialGradient(sealX - 10, sealY - 10, 5, sealX, sealY, 45);
+                sealGradient.addColorStop(0, "#c42a2a");
+                sealGradient.addColorStop(1, "#7c0b0b");
+                ctx.fillStyle = sealGradient;
+                ctx.fill();
+                
+                // Seal Ring
+                ctx.beginPath();
+                ctx.arc(sealX, sealY, 36, 0, Math.PI * 2);
+                ctx.strokeStyle = "rgba(255,255,255,0.15)";
+                ctx.lineWidth = 1.5;
+                ctx.stroke();
 
-                // QR Code Image Draw
-                const qrImg = qrcodeContainer ? qrcodeContainer.querySelector("img") : null;
-                if (qrImg && qrImg.src) {
-                    const qImg = new Image();
-                    qImg.onload = () => {
-                        ctx.drawImage(qImg, w / 2 - 50, 800, 100, 100);
-                        ctx.fillStyle = "#C5A059";
-                        ctx.font = "600 14px 'Montserrat', sans-serif";
-                        ctx.fillText("#" + currentPassData.ticketId, w / 2, 925);
-                        triggerDownload();
-                    };
-                    qImg.src = qrImg.src;
-                } else {
-                    ctx.fillStyle = "#C5A059";
-                    ctx.font = "600 14px 'Montserrat', sans-serif";
-                    ctx.fillText("#" + currentPassData.ticketId, w / 2, 910);
-                    triggerDownload();
-                }
+                // Seal Text
+                ctx.fillStyle = "#e59999";
+                ctx.font = "600 28px 'Cormorant Garamond', serif";
+                ctx.textAlign = "center";
+                ctx.textBaseline = "middle";
+                
+                // Text Shadow
+                ctx.save();
+                ctx.shadowColor = "rgba(0,0,0,0.4)";
+                ctx.shadowBlur = 2;
+                ctx.shadowOffsetX = -1;
+                ctx.shadowOffsetY = -1;
+                ctx.fillText("H&D", sealX, sealY + 2);
+                ctx.restore();
 
-                function triggerDownload() {
-                    const link = document.createElement("a");
-                    link.download = `Hari_Diya_Wedding_Pass_${currentPassData.name.replace(/\s+/g, '_')}.png`;
-                    link.href = canvas.toDataURL("image/png");
-                    link.click();
-                }
-            }
+                // Trigger Download
+                const link = document.createElement("a");
+                link.download = `Hari_Diya_Wedding_Note_${currentPassData.name.replace(/\s+/g, '_')}.png`;
+                link.href = canvas.toDataURL("image/png");
+                link.click();
+            });
         });
     }
 
