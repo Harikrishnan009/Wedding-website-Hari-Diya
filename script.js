@@ -416,25 +416,33 @@ document.addEventListener("DOMContentLoaded", () => {
             canvas.width = w;
             canvas.height = h;
 
-            // Background
-            const bgGradient = ctx.createLinearGradient(0, 0, 0, h);
-            bgGradient.addColorStop(0, "#FAF8F5");
-            bgGradient.addColorStop(1, "#F4F1EA");
+            // Background: Dark Premium Gradient
+            const bgGradient = ctx.createLinearGradient(0, 0, w, h);
+            bgGradient.addColorStop(0, "#1A1A1D");
+            bgGradient.addColorStop(0.5, "#2C2F33");
+            bgGradient.addColorStop(1, "#141416");
             ctx.fillStyle = bgGradient;
             ctx.fillRect(0, 0, w, h);
 
             // Card Gold Border & Corner Accents
-            ctx.strokeStyle = "#C5A059";
+            const goldGradient = ctx.createLinearGradient(0, 0, w, h);
+            goldGradient.addColorStop(0, "#C5A059");
+            goldGradient.addColorStop(0.5, "#E0C797");
+            goldGradient.addColorStop(1, "#C5A059");
+
+            ctx.strokeStyle = goldGradient;
             ctx.lineWidth = 4;
             ctx.strokeRect(20, 20, w - 40, h - 40);
 
-            ctx.strokeStyle = "rgba(197, 160, 89, 0.4)";
+            ctx.strokeStyle = "rgba(197, 160, 89, 0.3)";
             ctx.lineWidth = 1;
             ctx.strokeRect(28, 28, w - 56, h - 56);
 
             // Header Banner
-            ctx.fillStyle = "#7D8C77";
+            ctx.fillStyle = "rgba(255, 255, 255, 0.05)";
             ctx.fillRect(28, 28, w - 56, 110);
+            ctx.fillStyle = "rgba(197, 160, 89, 0.1)";
+            ctx.fillRect(28, 137, w - 56, 1); // underline
 
             ctx.fillStyle = "#FFFFFF";
             ctx.font = "300 32px 'Cormorant Garamond', serif";
@@ -444,15 +452,15 @@ document.addEventListener("DOMContentLoaded", () => {
             ctx.fillStyle = "#E0C797";
             ctx.font = "500 16px 'Montserrat', sans-serif";
             ctx.textAlign = "right";
-            ctx.fillText("OFFICIAL WEDDING PASS", w - 50, 90);
+            ctx.fillText("VIP WEDDING PASS", w - 50, 90);
 
             // Couple Names Header
-            ctx.fillStyle = "#2C3539";
+            ctx.fillStyle = "#FFFFFF";
             ctx.font = "300 48px 'Cormorant Garamond', serif";
             ctx.textAlign = "center";
             ctx.fillText("Hari & Diya", w / 2, 210);
 
-            ctx.fillStyle = "#6B7280";
+            ctx.fillStyle = "#A0A5AA";
             ctx.font = "400 16px 'Montserrat', sans-serif";
             ctx.fillText("Wedding Reception Invitation", w / 2, 242);
 
@@ -477,10 +485,10 @@ document.addEventListener("DOMContentLoaded", () => {
                 ctx.restore();
                 return; // async wait
             } else {
-                ctx.fillStyle = "#7D8C77";
+                ctx.fillStyle = goldGradient;
                 ctx.fill();
-                ctx.fillStyle = "#FFFFFF";
-                ctx.font = "500 42px 'Cormorant Garamond', serif";
+                ctx.fillStyle = "#111111";
+                ctx.font = "600 42px 'Cormorant Garamond', serif";
                 ctx.textAlign = "center";
                 ctx.textBaseline = "middle";
                 const parts = currentPassData.name.trim().split(" ");
@@ -499,22 +507,22 @@ document.addEventListener("DOMContentLoaded", () => {
                 // Avatar Golden Border
                 ctx.beginPath();
                 ctx.arc(avatarX, avatarY, avatarR + 2, 0, Math.PI * 2);
-                ctx.strokeStyle = "#C5A059";
+                ctx.strokeStyle = goldGradient;
                 ctx.lineWidth = 3;
                 ctx.stroke();
 
                 // Guest Info
-                ctx.fillStyle = "#6B7280";
+                ctx.fillStyle = "#A0A5AA";
                 ctx.font = "600 13px 'Montserrat', sans-serif";
                 ctx.textAlign = "center";
-                ctx.fillText("GUEST NAME", w / 2, 475);
+                ctx.fillText("HONORED GUEST", w / 2, 475);
 
-                ctx.fillStyle = "#2C3539";
+                ctx.fillStyle = "#FFFFFF";
                 ctx.font = "400 36px 'Cormorant Garamond', serif";
                 ctx.fillText(currentPassData.name, w / 2, 520);
 
                 // Details Row: Status & Guest Count
-                ctx.fillStyle = "#6B7280";
+                ctx.fillStyle = "#A0A5AA";
                 ctx.font = "600 13px 'Montserrat', sans-serif";
                 ctx.textAlign = "center";
                 ctx.fillText("ATTENDANCE: " + (currentPassData.attendance === "No" ? "Declined" : "Joyfully Attending") + "   |   GUESTS: " + (currentPassData.attendance === "No" ? "0" : currentPassData.guests), w / 2, 565);
@@ -529,20 +537,20 @@ document.addEventListener("DOMContentLoaded", () => {
                 ctx.setLineDash([]);
 
                 // Details Grid
-                ctx.fillStyle = "#6B7280";
+                ctx.fillStyle = "#A0A5AA";
                 ctx.font = "600 13px 'Montserrat', sans-serif";
                 ctx.textAlign = "center";
                 ctx.fillText("DATE & TIME", w / 2, 650);
 
-                ctx.fillStyle = "#2C3539";
+                ctx.fillStyle = "#FFFFFF";
                 ctx.font = "400 24px 'Cormorant Garamond', serif";
                 ctx.fillText("Sunday, January 24th, 2027 • 06:00 PM", w / 2, 685);
 
-                ctx.fillStyle = "#6B7280";
+                ctx.fillStyle = "#A0A5AA";
                 ctx.font = "600 13px 'Montserrat', sans-serif";
                 ctx.fillText("VENUE", w / 2, 725);
 
-                ctx.fillStyle = "#2C3539";
+                ctx.fillStyle = "#FFFFFF";
                 ctx.font = "400 22px 'Cormorant Garamond', serif";
                 ctx.fillText("Mohamed Bagh, Palakkad, Kerala", w / 2, 755);
 
