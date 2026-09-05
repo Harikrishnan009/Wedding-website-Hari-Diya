@@ -102,9 +102,9 @@ document.addEventListener("DOMContentLoaded", () => {
         }
 
         // Initial setup for the new sequence
-        gsap.set(logoWrap, { opacity: 0, scale: 0.95, y: 15 });
-        if(infinitySymbol) gsap.set(infinitySymbol, { opacity: 0, scale: 1.5 });
-        if(wishText) gsap.set(wishText, { opacity: 0, scale: 0.9 });
+        gsap.set(logoWrap, { opacity: 0, scale: 0.95, y: 20 });
+        if(infinitySymbol) gsap.set(infinitySymbol, { opacity: 0, scale: 1.4 });
+        if(wishText) gsap.set(wishText, { opacity: 0, y: -20, scale: 0.95 });
         
         // Ensure path starts hidden for drawing effect
         if(infinityPath) {
@@ -115,34 +115,34 @@ document.addEventListener("DOMContentLoaded", () => {
             onComplete: finishIntro
         });
 
-        // 1. Fade in and draw the large infinity symbol
+        // 1. First: Infinity symbol is loaded (fades in and draws in the center)
         if(infinitySymbol) {
-            tl.to(infinitySymbol, { opacity: 1, duration: 1, ease: "power2.out" }, 0.2);
+            tl.to(infinitySymbol, { opacity: 1, duration: 0.8, ease: "power2.out" }, 0.2);
         }
         if(infinityPath) {
-             tl.to(infinityPath, { strokeDashoffset: 0, duration: 2, ease: "power2.inOut" }, 0.2);
+             tl.to(infinityPath, { strokeDashoffset: 0, duration: 1.8, ease: "power2.inOut" }, 0.2);
         }
 
-        // 2. Shrink the infinity symbol and slide it up slightly
+        // 2. Second: Infinity scales to its normal small adaptive size while 11:11 (top) and H.D logo (bottom) slide into place around it
         if(infinitySymbol) {
-            tl.to(infinitySymbol, { scale: 0.35, y: -20, duration: 1.5, ease: "power3.inOut" }, 2.0);
+            tl.to(infinitySymbol, { scale: 1, duration: 1.2, ease: "power3.inOut" }, 1.8);
         }
 
-        // 3. Fade in the "11:11" wish text overlapping/near the small infinity
+        // 3. 11:11 Wish text slides in from above
         if(wishText) {
-            tl.to(wishText, { opacity: 1, scale: 1, duration: 1.2, ease: "power3.out" }, 2.4);
+            tl.to(wishText, { opacity: 1, y: 0, scale: 1, duration: 1.0, ease: "power2.out" }, 2.1);
         }
 
-        // 4. Reveal the H·D Monogram below
+        // 4. H·D Logo Emblem slides in from below
         tl.to(logoWrap, {
             opacity: 1,
             scale: 1,
             y: 0,
-            duration: 1.2,
+            duration: 1.0,
             ease: "power2.out"
-        }, 3.0);
+        }, 2.3);
 
-        // 5. Hold before fading out the overlay to reveal the main site
+        // 5. Hold before fading out to reveal the main site
         tl.to({}, { duration: 2.2 });
     }
 
