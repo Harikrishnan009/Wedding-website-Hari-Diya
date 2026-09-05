@@ -175,16 +175,29 @@ a {
 }
 
 .loader-date-badge {
-    margin-top: 1.5rem;
+    margin-top: 0.8rem;
     font-family: var(--font-serif);
-    font-size: clamp(1.1rem, 2.5vw, 1.4rem);
-    font-style: italic;
-    font-weight: 400;
+    font-size: clamp(0.9rem, 2vw, 1.15rem);
+    font-weight: 500;
     letter-spacing: 0.35em;
-    color: #586453;
-    border-top: 1px dashed rgba(125, 140, 119, 0.35);
-    border-bottom: 1px dashed rgba(125, 140, 119, 0.35);
-    padding: 0.4rem 1.8rem;
+    color: var(--color-gold);
+    background: rgba(197, 160, 89, 0.05);
+    border: 1px solid rgba(197, 160, 89, 0.35);
+    border-radius: 50px;
+    padding: 0.35rem 1.6rem;
+    box-shadow: 0 4px 15px rgba(197, 160, 89, 0.06);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.2rem;
+    transition: var(--transition-fast);
+}
+
+.loader-date-badge .date-dot {
+    color: var(--color-sage);
+    font-size: 0.8em;
+    margin: 0 0.2em;
+    opacity: 0.8;
 }
 
 @media (max-width: 540px) {
