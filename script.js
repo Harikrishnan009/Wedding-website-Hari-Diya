@@ -74,6 +74,10 @@ document.addEventListener("DOMContentLoaded", () => {
     initSnowfall();
 
     function runSnowfallLogoIntro() {
+        const infinitySymbol = document.querySelector(".infinity-symbol");
+        const infinityPath   = document.querySelector(".infinity-path");
+        const wishText       = document.querySelector(".wish-text");
+
         if (!loader || !logoWrap) return;
 
         const finishIntro = () => {
@@ -91,26 +95,55 @@ document.addEventListener("DOMContentLoaded", () => {
         if (typeof gsap === "undefined") {
             logoWrap.style.opacity = "1";
             logoWrap.style.transform = "scale(1)";
+            if(infinitySymbol) infinitySymbol.style.opacity = "0";
+            if(wishText) wishText.style.opacity = "1";
             setTimeout(finishIntro, 2500);
             return;
         }
 
-        gsap.set(logoWrap, { opacity: 0, scale: 0.95 });
+        // Initial setup for the new sequence
+        gsap.set(logoWrap, { opacity: 0, scale: 0.95, y: 15 });
+        if(infinitySymbol) gsap.set(infinitySymbol, { opacity: 0, scale: 1.5 });
+        if(wishText) gsap.set(wishText, { opacity: 0, scale: 0.9 });
+        
+        // Ensure path starts hidden for drawing effect
+        if(infinityPath) {
+             gsap.set(infinityPath, { strokeDasharray: 300, strokeDashoffset: 300 }); 
+        }
 
         const tl = gsap.timeline({
             onComplete: finishIntro
         });
 
-        // Clean static reveal of H·D monogram logo emblem centered amidst snowfall on white background
+        // 1. Fade in and draw the large infinity symbol
+        if(infinitySymbol) {
+            tl.to(infinitySymbol, { opacity: 1, duration: 1, ease: "power2.out" }, 0.2);
+        }
+        if(infinityPath) {
+             tl.to(infinityPath, { strokeDashoffset: 0, duration: 2, ease: "power2.inOut" }, 0.2);
+        }
+
+        // 2. Shrink the infinity symbol and slide it up slightly
+        if(infinitySymbol) {
+            tl.to(infinitySymbol, { scale: 0.35, y: -20, duration: 1.5, ease: "power3.inOut" }, 2.0);
+        }
+
+        // 3. Fade in the "11:11" wish text overlapping/near the small infinity
+        if(wishText) {
+            tl.to(wishText, { opacity: 1, scale: 1, duration: 1.2, ease: "power3.out" }, 2.4);
+        }
+
+        // 4. Reveal the H·D Monogram below
         tl.to(logoWrap, {
             opacity: 1,
             scale: 1,
+            y: 0,
             duration: 1.2,
             ease: "power2.out"
-        }, 0.2);
+        }, 3.0);
 
-        // Display before fading smoothly into the main site
-        tl.to({}, { duration: 1.8 });
+        // 5. Hold before fading out the overlay to reveal the main site
+        tl.to({}, { duration: 2.2 });
     }
 
     runSnowfallLogoIntro();
