@@ -2,18 +2,18 @@
    DESIGN SYSTEM & VARIABLES
 -----------------------------------------------------------------*/
 :root {
-    --bg-primary: #FAF8F5;
-    --bg-secondary: #F4F1EA;
-    --bg-card: #FFFFFF;
-    --bg-navbar: rgba(250, 248, 245, 0.95);
-    --border-color: rgba(197, 160, 89, 0.25);
-    --color-sage: #7D8C77;
-    --color-sage-light: #A3B19B;
-    --color-sage-dark: #586453;
-    --color-gold: #C5A059;
-    --color-gold-light: #E0C797;
-    --color-text-main: #2C3539;
-    --color-text-muted: #6B7280;
+    --bg-primary: #170F11;
+    --bg-secondary: #24181B;
+    --bg-card: #2D1F23;
+    --bg-navbar: rgba(23, 15, 17, 0.95);
+    --border-color: rgba(223, 192, 123, 0.3);
+    --color-sage: #A8525D;
+    --color-sage-light: #C9868F;
+    --color-sage-dark: #843842;
+    --color-gold: #DFC07B;
+    --color-gold-light: #F2DEC2;
+    --color-text-main: #FAF0F2;
+    --color-text-muted: #BFA8AC;
     --font-serif: 'Cormorant Garamond', serif;
     --font-sans: 'Montserrat', sans-serif;
     --font-script: 'Alex Brush', cursive;
@@ -69,7 +69,8 @@ a {
     left: 0;
     width: 100%;
     height: 100vh;
-    background: #FFFFFF;
+    background: var(--bg-primary);
+    color: var(--color-text-main);
     display: flex;
     justify-content: center;
     align-items: center;
@@ -497,12 +498,58 @@ a {
     gap: 2.5rem;
 }
 
+/* Story Mode Toggle Switcher */
+.story-toggle-wrap {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.8rem;
+    margin-top: 1.5rem;
+}
+
+.story-toggle-label {
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--color-gold);
+    font-weight: 500;
+}
+
+.story-toggle-btns {
+    display: flex;
+    background: var(--bg-card);
+    padding: 4px;
+    border-radius: 30px;
+    border: 1px solid var(--border-color);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+}
+
+.story-toggle-btn {
+    border: none;
+    background: transparent;
+    color: var(--color-text-muted);
+    padding: 0.55rem 1.4rem;
+    font-family: var(--font-sans);
+    font-size: 0.85rem;
+    font-weight: 500;
+    border-radius: 25px;
+    cursor: pointer;
+    transition: var(--transition-fast);
+}
+
+.story-toggle-btn.active {
+    background: var(--color-gold);
+    color: #170F11;
+    font-weight: 600;
+    box-shadow: 0 2px 10px rgba(223, 192, 123, 0.3);
+}
+
 .story-card {
     background: var(--bg-card);
     padding: 2.5rem;
-    border-radius: 4px;
-    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.04);
-    border-left: 3px solid var(--color-sage-light);
+    border-radius: 6px;
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.15);
+    border-left: 3px solid var(--color-gold);
     transform: translateY(30px);
     opacity: 0;
     transition: var(--transition-smooth);
@@ -515,14 +562,14 @@ a {
 
 .story-date {
     font-size: 1.8rem;
-    color: var(--color-sage);
+    color: var(--color-gold);
     margin-bottom: 1rem;
     font-weight: 400;
 }
 
 .story-card p {
     font-size: 0.95rem;
-    color: var(--color-text-muted);
+    color: var(--color-text-main);
     line-height: 1.8;
     font-weight: 300;
 }
@@ -540,7 +587,7 @@ a {
     background: var(--bg-card);
     padding: 1rem;
     padding-bottom: 2.5rem;
-    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
     border: 1px solid var(--border-color);
     transition: var(--transition-smooth);
 }
@@ -550,7 +597,7 @@ a {
     width: 100%;
     height: 100%;
     object-fit: cover;
-    background-color: var(--bg-secondary); /* Placeholder visual */
+    background-color: var(--bg-secondary);
 }
 
 .frame-label {
@@ -560,7 +607,7 @@ a {
     transform: translateX(-50%);
     font-family: var(--font-script);
     font-size: 1.6rem;
-    color: var(--color-sage-dark);
+    color: var(--color-gold);
     white-space: nowrap;
 }
 
@@ -585,11 +632,105 @@ a {
 .artistic-frame:hover {
     transform: scale(1.05) rotate(0deg);
     z-index: 5;
-    box-shadow: 0 15px 50px rgba(0, 0, 0, 0.08);
+    box-shadow: 0 15px 50px rgba(223, 192, 123, 0.15);
 }
 
 /* ----------------------------------------------------------------
-   CREATIVE GALLERY SECTION (STAGGERED MOSAIC)
+   UNOFFICIAL WEDDING RULES SECTION
+-----------------------------------------------------------------*/
+#rules {
+    background-color: var(--bg-secondary);
+}
+
+.section-description {
+    color: var(--color-text-muted);
+    font-size: 0.95rem;
+    margin-top: 0.8rem;
+    text-align: center;
+}
+
+.rules-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2rem;
+    margin-top: 3rem;
+}
+
+.rule-card {
+    background: var(--bg-card);
+    padding: 2rem;
+    border-radius: 8px;
+    border: 1px solid var(--border-color);
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
+    transition: var(--transition-smooth);
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+.rule-card:hover {
+    transform: translateY(-6px);
+    border-color: var(--color-gold);
+    box-shadow: 0 12px 35px rgba(223, 192, 123, 0.15);
+}
+
+.rule-icon {
+    font-size: 2.2rem;
+    margin-bottom: 1rem;
+}
+
+.rule-card h3 {
+    font-size: 1.35rem;
+    color: var(--color-gold);
+    margin-bottom: 0.6rem;
+    font-weight: 400;
+}
+
+.rule-card p {
+    font-size: 0.9rem;
+    color: var(--color-text-muted);
+    line-height: 1.6;
+}
+
+/* Quiz Banner */
+.quiz-banner {
+    margin-top: 3.5rem;
+    background: linear-gradient(135deg, var(--bg-card) 0%, rgba(168, 82, 93, 0.25) 100%);
+    border: 1px solid var(--color-gold);
+    padding: 2.5rem;
+    border-radius: 12px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 2rem;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+}
+
+.quiz-banner-content h3 {
+    font-size: 1.6rem;
+    color: var(--color-gold);
+    margin-bottom: 0.4rem;
+}
+
+.quiz-banner-content p {
+    color: var(--color-text-muted);
+    font-size: 0.95rem;
+}
+
+.quiz-btn {
+    white-space: nowrap;
+    padding: 0.85rem 1.8rem;
+}
+
+@media (max-width: 768px) {
+    .quiz-banner {
+        flex-direction: column;
+        text-align: center;
+    }
+}
+
+/* ----------------------------------------------------------------
+   CREATIVE GALLERY SECTION (PURE PHOTOS WITHOUT QUOTES)
 -----------------------------------------------------------------*/
 #gallery {
     background-color: var(--bg-primary);
@@ -605,11 +746,11 @@ a {
 .gallery-item {
     display: flex;
     flex-direction: column;
-    background: #FFFFFF;
-    padding: 1rem;
-    padding-bottom: 2rem;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.03);
-    border: 1px solid rgba(224, 199, 151, 0.15);
+    background: var(--bg-card);
+    padding: 0.8rem;
+    border-radius: 6px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    border: 1px solid var(--border-color);
     transition: var(--transition-smooth);
     opacity: 0;
     transform: translateY(40px);
@@ -620,10 +761,17 @@ a {
     transform: translateY(0);
 }
 
+.gallery-item:hover {
+    transform: translateY(-8px) scale(1.01);
+    box-shadow: 0 18px 45px rgba(223, 192, 123, 0.18);
+    border-color: var(--color-gold);
+}
+
 .gallery-img-wrapper {
     position: relative;
     width: 100%;
     overflow: hidden;
+    border-radius: 4px;
     background-color: var(--bg-secondary);
 }
 
@@ -639,44 +787,8 @@ a {
     aspect-ratio: 3 / 4;
 }
 
-.gallery-overlay {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(125, 140, 119, 0.4);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    opacity: 0;
-    transition: var(--transition-fast);
-}
-
-.gallery-overlay span {
-    color: #FFFFFF;
-    font-family: var(--font-serif);
-    font-size: 1.5rem;
-    letter-spacing: 0.1em;
-    transform: translateY(15px);
-    transition: var(--transition-smooth);
-}
-
 .gallery-img-wrapper:hover .gallery-img {
-    transform: scale(1.08);
-}
-
-.gallery-img-wrapper:hover .gallery-overlay {
-    opacity: 1;
-}
-
-.gallery-img-wrapper:hover .gallery-overlay span {
-    transform: translateY(0);
-}
-
-.gallery-caption {
-    margin-top: 1.2rem;
-    text-align: center;
+    transform: scale(1.06);
 }
 
 .gallery-caption h4 {
@@ -1769,3 +1881,150 @@ a {
         font-size: 0.75rem;
     }
 }
+
+/* ----------------------------------------------------------------
+   TEAM SELECTOR (RSVP) & QUIZ MODAL STYLES
+-----------------------------------------------------------------*/
+.team-selector {
+    display: flex;
+    gap: 1rem;
+    width: 100%;
+    margin-top: 0.5rem;
+}
+
+.team-option {
+    flex: 1;
+    cursor: pointer;
+}
+
+.team-option input {
+    display: none;
+}
+
+.team-card {
+    display: block;
+    text-align: center;
+    padding: 0.8rem 0.5rem;
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: var(--color-text-main);
+    transition: var(--transition-fast);
+}
+
+.team-option input:checked + .team-card {
+    background: var(--color-gold);
+    color: #170F11;
+    font-weight: 600;
+    border-color: var(--color-gold);
+    box-shadow: 0 4px 15px rgba(223, 192, 123, 0.3);
+}
+
+.team-option:hover .team-card {
+    border-color: var(--color-gold);
+}
+
+@media (max-width: 600px) {
+    .team-selector {
+        flex-direction: column;
+        gap: 0.6rem;
+    }
+}
+
+/* Quiz Modal */
+.quiz-modal-container {
+    max-width: 520px;
+}
+
+.quiz-box {
+    text-align: center;
+    padding: 1rem;
+}
+
+.quiz-badge {
+    display: inline-block;
+    padding: 0.3rem 0.8rem;
+    background: rgba(223, 192, 123, 0.15);
+    color: var(--color-gold);
+    font-size: 0.75rem;
+    font-weight: 600;
+    border-radius: 20px;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin-bottom: 0.6rem;
+}
+
+.quiz-header h2 {
+    font-size: 1.8rem;
+    color: var(--color-text-main);
+    margin-bottom: 0.4rem;
+}
+
+.quiz-header p {
+    color: var(--color-text-muted);
+    font-size: 0.9rem;
+    margin-bottom: 1.5rem;
+}
+
+.quiz-step h3 {
+    font-size: 1.25rem;
+    color: var(--color-gold);
+    margin-bottom: 1.2rem;
+    font-weight: 400;
+}
+
+.quiz-options {
+    display: flex;
+    flex-direction: column;
+    gap: 0.8rem;
+}
+
+.quiz-opt-btn {
+    width: 100%;
+    padding: 0.85rem 1.2rem;
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    color: var(--color-text-main);
+    font-family: var(--font-sans);
+    font-size: 0.9rem;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: var(--transition-fast);
+    text-align: left;
+}
+
+.quiz-opt-btn:hover {
+    background: var(--color-gold);
+    color: #170F11;
+    border-color: var(--color-gold);
+    transform: translateX(4px);
+}
+
+.quiz-result-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem 0;
+}
+
+.quiz-result-icon {
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: var(--color-gold);
+    letter-spacing: 0.1em;
+}
+
+.quiz-result-card h3 {
+    font-size: 2rem;
+    color: var(--color-text-main);
+}
+
+.quiz-result-card p {
+    color: var(--color-text-muted);
+    font-size: 0.95rem;
+    line-height: 1.6;
+}
+
