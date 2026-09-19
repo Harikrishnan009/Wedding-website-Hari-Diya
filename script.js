@@ -78,72 +78,57 @@ document.addEventListener("DOMContentLoaded", () => {
         const infinityPath   = document.querySelector(".infinity-path");
         const wishText       = document.querySelector(".wish-text");
 
-        if (!loader || !logoWrap) return;
+        // ── ABSOLUTE FAILSAFE: Hide loader after 5s no matter what ──
+        // This prevents the loader from blocking all page content if GSAP
+        // fails, the tab is backgrounded, or onComplete never fires.
+        const FAILSAFE_MS = 5000;
+        const failsafeTimer = setTimeout(() => {
+            if (loader && !loader.classList.contains("hide")) {
+                loader.style.display = "none";
+                if (snowAnimId) cancelAnimationFrame(snowAnimId);
+            }
+        }, FAILSAFE_MS);
+
+        if (!loader || !logoWrap) {
+            clearTimeout(failsafeTimer);
+            return;
+        }
 
         const finishIntro = () => {
+            clearTimeout(failsafeTimer);
             loader.classList.add("hide");
             setTimeout(() => {
                 loader.style.display = "none";
                 if (snowAnimId) cancelAnimationFrame(snowAnimId);
-                if (heroContent) {
-                    heroContent.style.opacity = "1";
-                    heroContent.style.transform = "scale(1)";
-                }
-            }, 1200);
+            }, 800);
         };
 
         if (typeof gsap === "undefined") {
-            logoWrap.style.opacity = "1";
-            logoWrap.style.transform = "scale(1)";
-            if(infinitySymbol) infinitySymbol.style.opacity = "0";
+            // GSAP not loaded — show everything instantly and dismiss quickly
+            if(infinitySymbol) infinitySymbol.style.opacity = "1";
             if(wishText) wishText.style.opacity = "1";
-            setTimeout(finishIntro, 2500);
+            logoWrap.style.opacity = "1";
+            logoWrap.style.transform = "scale(1) translateY(0)";
+            setTimeout(finishIntro, 1500);
             return;
         }
 
-        // Initial setup for the new sequence
-        gsap.set(logoWrap, { opacity: 0, scale: 0.95, y: 20 });
-        if(infinitySymbol) gsap.set(infinitySymbol, { opacity: 0, scale: 1.4 });
-        if(wishText) gsap.set(wishText, { opacity: 0, y: -20, scale: 0.95 });
-        
-        // Ensure path starts hidden for drawing effect
-        if(infinityPath) {
-             gsap.set(infinityPath, { strokeDasharray: 300, strokeDashoffset: 300 }); 
-        }
+        // Elements start invisible for the animated entrance
+        gsap.set(logoWrap, { opacity: 0, scale: 0.95, y: 15 });
+        if(infinitySymbol) gsap.set(infinitySymbol, { opacity: 0, scale: 1.2 });
+        if(wishText) gsap.set(wishText, { opacity: 0, y: -12, scale: 0.95 });
+        if(infinityPath) gsap.set(infinityPath, { strokeDasharray: 300, strokeDashoffset: 300 });
 
-        const tl = gsap.timeline({
-            onComplete: finishIntro
-        });
+        const tl = gsap.timeline({ onComplete: finishIntro });
 
-        // 1. First: Infinity symbol is loaded (fades in and draws in the center)
-        if(infinitySymbol) {
-            tl.to(infinitySymbol, { opacity: 1, duration: 0.8, ease: "power2.out" }, 0.2);
-        }
-        if(infinityPath) {
-             tl.to(infinityPath, { strokeDashoffset: 0, duration: 1.8, ease: "power2.inOut" }, 0.2);
-        }
+        // All elements reveal quickly and together
+        if(infinitySymbol) tl.to(infinitySymbol, { opacity: 1, scale: 1, duration: 0.7, ease: "power2.out" }, 0);
+        if(infinityPath)   tl.to(infinityPath, { strokeDashoffset: 0, duration: 1.2, ease: "power2.inOut" }, 0);
+        if(wishText)       tl.to(wishText, { opacity: 1, y: 0, scale: 1, duration: 0.7, ease: "power2.out" }, 0.1);
+        tl.to(logoWrap, { opacity: 1, scale: 1, y: 0, duration: 0.7, ease: "power2.out" }, 0.2);
 
-        // 2. Second: Infinity scales to its normal small adaptive size while 11:11 (top) and H.D logo (bottom) slide into place around it
-        if(infinitySymbol) {
-            tl.to(infinitySymbol, { scale: 1, duration: 1.2, ease: "power3.inOut" }, 1.8);
-        }
-
-        // 3. 11:11 Wish text slides in from above
-        if(wishText) {
-            tl.to(wishText, { opacity: 1, y: 0, scale: 1, duration: 1.0, ease: "power2.out" }, 2.1);
-        }
-
-        // 4. H·D Logo Emblem slides in from below
-        tl.to(logoWrap, {
-            opacity: 1,
-            scale: 1,
-            y: 0,
-            duration: 1.0,
-            ease: "power2.out"
-        }, 2.3);
-
-        // 5. Hold before fading out to reveal the main site
-        tl.to({}, { duration: 2.2 });
+        // Brief hold, then dismiss
+        tl.to({}, { duration: 1.2 });
     }
 
     runSnowfallLogoIntro();
@@ -203,6 +188,32 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
     revealElements.forEach(el => revealObserver.observe(el));
+
+    // ==========================================
+    // 3b. STORY FRAME TAP-TO-FRONT (Mobile)
+    // ==========================================
+    const frameLeft  = document.getElementById("frameLeft");
+    const frameRight = document.getElementById("frameRight");
+
+    function bringToFront(activeFrame, otherFrame) {
+        activeFrame.style.zIndex  = "5";
+        otherFrame.style.zIndex   = "1";
+        activeFrame.style.transform = "scale(1.04) rotate(0deg)";
+    }
+
+    if (frameLeft && frameRight) {
+        frameLeft.addEventListener("click", () => {
+            bringToFront(frameLeft, frameRight);
+            setTimeout(() => { frameLeft.style.transform = ""; }, 600);
+        });
+        frameLeft.addEventListener("keydown", e => { if (e.key === "Enter" || e.key === " ") frameLeft.click(); });
+
+        frameRight.addEventListener("click", () => {
+            bringToFront(frameRight, frameLeft);
+            setTimeout(() => { frameRight.style.transform = ""; }, 600);
+        });
+        frameRight.addEventListener("keydown", e => { if (e.key === "Enter" || e.key === " ") frameRight.click(); });
+    }
 
     // ==========================================
     // 4. COUNTDOWN TIMER

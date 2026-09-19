@@ -96,6 +96,7 @@ a {
     transform: scale(1.02);
     visibility: hidden;
     pointer-events: none;
+    display: none !important;
 }
 
 .loader-content {
@@ -122,7 +123,7 @@ a {
     width: clamp(90px, 22vw, 150px);
     height: clamp(45px, 11vw, 75px);
     color: var(--color-gold);
-    opacity: 0;
+    opacity: 1;
     transform-origin: center;
     position: relative;
     z-index: 1;
@@ -131,7 +132,7 @@ a {
 
 .infinity-path {
     stroke-dasharray: 300;
-    stroke-dashoffset: 300;
+    stroke-dashoffset: 0;
 }
 
 /* --- Wish Text --- */
@@ -141,21 +142,24 @@ a {
     font-size: clamp(1.4rem, 4.5vw, 2.4rem);
     color: var(--color-gold);
     letter-spacing: 0.2em;
-    opacity: 0;
+    margin-right: -0.2em;
+    opacity: 1;
     z-index: 2;
     white-space: nowrap;
     text-transform: uppercase;
     text-shadow: 0 2px 10px rgba(223, 192, 123, 0.3);
+    text-align: center;
 }
 
 /* --- H·D Logo Clean White Intro --- */
 .loader-logo-wrap {
     text-align: center;
-    opacity: 0;
-    transform: scale(0.95) translateY(10px);
+    opacity: 1;
+    transform: scale(1) translateY(0);
     display: flex;
     flex-direction: column;
     align-items: center;
+    width: 100%;
 }
 
 .loader-logo {
@@ -164,10 +168,12 @@ a {
     font-weight: 400;
     color: var(--color-text-main);
     letter-spacing: 0.22em;
+    margin-right: -0.22em;
     line-height: 1;
     position: relative;
     z-index: 2;
     text-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+    text-align: center;
 }
 
 .loader-dot {
@@ -324,13 +330,18 @@ a {
 -----------------------------------------------------------------*/
 #hero {
     position: relative;
-    height: 100vh;
+    min-height: 100vh;
+    min-height: 100dvh;
     display: flex;
+    flex-direction: column;
     justify-content: center;
     align-items: center;
     text-align: center;
     background-color: var(--bg-primary);
     overflow: hidden;
+    width: 100%;
+    padding: 6rem 1.5rem 5rem 1.5rem;
+    box-sizing: border-box;
 }
 
 /* Subtle organic dynamic leaf graphics or soft background colors */
@@ -346,9 +357,17 @@ a {
 
 .hero-content {
     z-index: 2;
-    opacity: 0;
-    transform: scale(0.95);
-    animation: revealHero 2s 3s forwards cubic-bezier(0.16, 1, 0.3, 1);
+    opacity: 1;
+    transform: scale(1);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    width: 100%;
+    max-width: 900px;
+    margin: 0 auto;
+    box-sizing: border-box;
 }
 
 .hero-welcome {
@@ -356,9 +375,12 @@ a {
     font-weight: 400;
     text-transform: uppercase;
     letter-spacing: 0.3em;
+    margin-right: -0.3em;
     color: var(--color-gold);
     margin-bottom: 1.5rem;
     text-shadow: 0 2px 10px rgba(0, 0, 0, 0.4);
+    text-align: center;
+    width: 100%;
 }
 
 .hero-names {
@@ -369,6 +391,8 @@ a {
     margin-bottom: 1.5rem;
     word-spacing: 0.1em;
     text-shadow: 0 4px 25px rgba(0, 0, 0, 0.6), 0 0 40px rgba(223, 192, 123, 0.25);
+    text-align: center;
+    width: 100%;
 }
 
 .hero-wish {
@@ -378,13 +402,8 @@ a {
     letter-spacing: 0.02em;
     font-weight: 400;
     text-shadow: 0 2px 12px rgba(223, 192, 123, 0.4);
-}
-
-@keyframes revealHero {
-    to {
-        opacity: 1;
-        transform: scale(1);
-    }
+    text-align: center;
+    width: 100%;
 }
 
 /* Scroll Down Indicator */
@@ -396,19 +415,24 @@ a {
     display: flex;
     flex-direction: column;
     align-items: center;
+    justify-content: center;
+    text-align: center;
     gap: 0.5rem;
     color: var(--color-gold);
-    opacity: 0;
-    animation: fadeIn 1.5s 4.5s forwards ease-in-out;
+    opacity: 1;
     cursor: pointer;
     z-index: 2;
+    width: 100%;
+    max-width: 300px;
 }
 
 .scroll-text {
     font-size: 0.8rem;
     text-transform: uppercase;
     letter-spacing: 0.22em;
+    margin-right: -0.22em;
     font-weight: 500;
+    text-align: center;
 }
 
 .scroll-arrow {
@@ -589,13 +613,25 @@ a {
 }
 
 .artistic-frame {
-    position: absolute;
+    position: relative;
     background: var(--bg-card);
-    padding: 1rem;
-    padding-bottom: 2.5rem;
+    padding: 0.8rem;
+    padding-bottom: 3.2rem;
     box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
     border: 1px solid var(--border-color);
     transition: var(--transition-smooth);
+    border-radius: 4px;
+    display: flex;
+    flex-direction: column;
+    box-sizing: border-box;
+    cursor: pointer;
+}
+
+.frame-img-wrap {
+    width: 100%;
+    flex: 1;
+    overflow: hidden;
+    border-radius: 2px;
 }
 
 .artistic-frame img {
@@ -608,16 +644,31 @@ a {
 
 .frame-label {
     position: absolute;
-    bottom: 0.8rem;
+    bottom: 1.1rem;
     left: 50%;
     transform: translateX(-50%);
     font-family: var(--font-script);
     font-size: 1.6rem;
     color: var(--color-gold);
     white-space: nowrap;
+    z-index: 3;
+    pointer-events: none;
+}
+
+.tap-hint {
+    display: none;
+    position: absolute;
+    bottom: 0.2rem;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 0.65rem;
+    color: var(--color-text-muted);
+    letter-spacing: 0.05em;
+    pointer-events: none;
 }
 
 .frame-left {
+    position: absolute;
     width: 280px;
     height: 380px;
     left: 5%;
@@ -627,6 +678,7 @@ a {
 }
 
 .frame-right {
+    position: absolute;
     width: 260px;
     height: 350px;
     right: 5%;
@@ -779,6 +831,22 @@ a {
     overflow: hidden;
     border-radius: 4px;
     background-color: var(--bg-secondary);
+}
+
+.gallery-img-wrapper::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 60%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(223, 192, 123, 0.15), transparent);
+    transition: left 0.8s ease-in-out;
+    pointer-events: none;
+}
+
+.gallery-item:hover .gallery-img-wrapper::after {
+    left: 140%;
 }
 
 .gallery-img {
@@ -1497,6 +1565,31 @@ a {
 
     .hero-names {
         font-size: clamp(3rem, 11vw, 4.5rem);
+    }
+
+    .story-image-container {
+        height: 360px;
+        width: 100%;
+    }
+
+    .frame-left {
+        width: 48%;
+        height: 300px;
+        left: 2%;
+        top: 5%;
+        transform: rotate(-2deg);
+    }
+
+    .frame-right {
+        width: 45%;
+        height: 280px;
+        right: 2%;
+        bottom: 5%;
+        transform: rotate(3deg);
+    }
+
+    .tap-hint {
+        display: block;
     }
 
     .hero-wish {
