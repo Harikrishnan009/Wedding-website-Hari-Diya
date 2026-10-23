@@ -170,7 +170,7 @@ document.addEventListener("DOMContentLoaded", () => {
     // ==========================================
     // 3. SCROLL REVEAL ANIMATIONS (Intersection Observer)
     // ==========================================
-    const revealElements = document.querySelectorAll(".story-card, .gallery-item");
+    const revealElements = document.querySelectorAll(".story-card, .gallery-card, .film-frame-card");
 
     const revealCallback = (entries, observer) => {
         entries.forEach(entry => {
@@ -213,6 +213,541 @@ document.addEventListener("DOMContentLoaded", () => {
             setTimeout(() => { frameRight.style.transform = ""; }, 600);
         });
         frameRight.addEventListener("keydown", e => { if (e.key === "Enter" || e.key === " ") frameRight.click(); });
+    }
+
+    // ==========================================
+    // 3c. INTERACTIVE PRE-WEDDING GALLERY & LIGHTBOX ENGINE
+    // ==========================================
+    const galleryData = [
+        {
+            index: 0,
+            src: "assets/shoot_placeholder_1.png",
+            title: "Living With You Is Pure Bliss",
+            tamil: "உன்னோடு வாழ்வது ஆனந்தமே",
+            subtitle: "Our Signature Portrait • Hari & Diya",
+            desc: "The hand-illustrated signature moment capturing our shared smiles, warmth, and lifelong promise.",
+            location: "Signature Studio, Chennai",
+            date: "Our 11:11 Wish",
+            category: "heritage",
+            categoryLabel: "Heritage & Grace",
+            hearts: 142
+        },
+        {
+            index: 1,
+            src: "assets/shoot_photo_beach.jpg",
+            title: "Golden Hour Whispers",
+            tamil: "",
+            subtitle: "Barefoot laughter as the evening tide welcomes our forever",
+            desc: "Walking along the golden shore, our hearts matching the rhythmic rise and fall of the gentle evening waves.",
+            location: "Marina Coastal Shore",
+            date: "Dusk Glow",
+            category: "nature",
+            categoryLabel: "Nature & Shores",
+            hearts: 98
+        },
+        {
+            index: 2,
+            src: "assets/shoot_photo_hills.jpg",
+            title: "Munnar Whispers",
+            tamil: "",
+            subtitle: "Wrapped in emerald plantations & crisp mountain breeze",
+            desc: "Standing atop misty rolling hills in Munnar, surrounded by lush tea shrubs under soft morning sunbeams.",
+            location: "Munnar High Range, Kerala",
+            date: "Mountain Sunrise",
+            category: "nature",
+            categoryLabel: "Nature & Shores",
+            hearts: 115
+        },
+        {
+            index: 3,
+            src: "assets/shoot_photo_heritage.jpg",
+            title: "A Royal Heritage Reflection",
+            tamil: "",
+            subtitle: "Illuminated by brass diyas in an antique Chettinad courtyard",
+            desc: "Carved wooden pillars, fragrant white jasmine blossoms, rich Kanchipuram silk, and the timeless glow of oil lamps.",
+            location: "Chettinad Heritage Courtyard",
+            date: "Twilight Diyas",
+            category: "heritage",
+            categoryLabel: "Heritage & Grace",
+            hearts: 136
+        },
+        {
+            index: 4,
+            src: "assets/shoot_photo_boat.jpg",
+            title: "Drifting Into Forever",
+            tamil: "",
+            subtitle: "Lotus petals and marigold garlands over tranquil waters",
+            desc: "A romantic canoe ride across calm backwaters as the setting sun painted ripples of amber and gold.",
+            location: "Vembanad Backwaters, Kerala",
+            date: "Golden Twilight",
+            category: "nature",
+            categoryLabel: "Nature & Shores",
+            hearts: 88
+        },
+        {
+            index: 5,
+            src: "assets/shoot_photo_lane.jpg",
+            title: "Bougainvillea Lane",
+            tamil: "",
+            subtitle: "Sunlight filtering through vibrant magenta petals",
+            desc: "Hand-in-hand strolls along quiet historic cobblestone paths, where every flower bloomed for our love story.",
+            location: "Pondicherry White Town",
+            date: "Warm Afternoon",
+            category: "candid",
+            categoryLabel: "Candid & Romance",
+            hearts: 104
+        },
+        {
+            index: 6,
+            src: "assets/shoot_photo_ring.jpg",
+            title: "A Promise Sealed in Gold",
+            tamil: "",
+            subtitle: "Intertwined hands, the solitaire diamond & bridal mehendi",
+            desc: "Delicate henna motifs, sparkling facets, and the sacred warmth of fingers that fit together perfectly.",
+            location: "The Sacred Vow Ceremony",
+            date: "Intimate Promise",
+            category: "candid",
+            categoryLabel: "Candid & Romance",
+            hearts: 158
+        },
+        {
+            index: 7,
+            src: "assets/shoot_placeholder_4.png",
+            title: "Sunlit Canopy",
+            tamil: "",
+            subtitle: "Walking into the light under towering evergreens",
+            desc: "Stepping together along sun-dappled trails, trusting each stride as our shadows merged into one.",
+            location: "Pine Forest Trail",
+            date: "Enchanted Woods",
+            category: "nature",
+            categoryLabel: "Nature & Shores",
+            hearts: 82
+        },
+        {
+            index: 8,
+            src: "assets/shoot_placeholder_3.png",
+            title: "Entwined in Gold",
+            tamil: "",
+            subtitle: "Fine art botanical illustration of sacred touch",
+            desc: "Olive leaves, gold dust, and joined palms representing enduring tranquility, friendship, and peace.",
+            location: "Artistic Keepsake",
+            date: "Fine Art Watercolor",
+            category: "candid",
+            categoryLabel: "Candid & Romance",
+            hearts: 89
+        },
+        {
+            index: 9,
+            src: "assets/shoot_placeholder_2.png",
+            title: "Under the Eternal Banyan",
+            tamil: "",
+            subtitle: "Rooted deep in love, reaching into tomorrow's sky",
+            desc: "Embraced beneath the grand sheltering branches of eternity, where our 11:11 wishes came true.",
+            location: "Sacred Grove Sanctuary",
+            date: "Golden Sunset",
+            category: "heritage",
+            categoryLabel: "Heritage & Grace",
+            hearts: 129
+        }
+    ];
+
+    // Load persisted likes from sessionStorage
+    const savedLikes = JSON.parse(sessionStorage.getItem("wedding_gallery_likes") || "{}");
+    galleryData.forEach(item => {
+        if (savedLikes[item.index] !== undefined) {
+            item.hearts = savedLikes[item.index].count;
+            item.liked = savedLikes[item.index].liked;
+        }
+    });
+
+    // Populate Cinematic Film Reel
+    const filmReelTrack = document.getElementById("filmReelTrack");
+    if (filmReelTrack) {
+        filmReelTrack.innerHTML = galleryData.map((item, idx) => `
+            <div class="film-frame-card" data-index="${idx}" data-category="${item.category}">
+                <div class="film-frame-header">
+                    <span>FRAME #${String(idx + 1).padStart(2, "0")}</span>
+                    <span>${item.categoryLabel}</span>
+                </div>
+                <div class="film-frame-img-box">
+                    <img src="${item.src}" alt="${item.title}" loading="lazy">
+                </div>
+                <div class="film-frame-body">
+                    <h4>${item.title}</h4>
+                    <p>${item.subtitle}</p>
+                </div>
+            </div>
+        `).join("");
+    }
+
+    // View Switcher (Lookbook vs Film Reel)
+    const viewShowcaseBtn = document.getElementById("viewShowcaseBtn");
+    const viewReelBtn = document.getElementById("viewReelBtn");
+    const galleryShowcaseView = document.getElementById("galleryShowcaseView");
+    const galleryReelView = document.getElementById("galleryReelView");
+
+    function setGalleryView(mode) {
+        if (mode === "reel") {
+            if (viewReelBtn) {
+                viewReelBtn.classList.add("active");
+                viewReelBtn.setAttribute("aria-pressed", "true");
+            }
+            if (viewShowcaseBtn) {
+                viewShowcaseBtn.classList.remove("active");
+                viewShowcaseBtn.setAttribute("aria-pressed", "false");
+            }
+            if (galleryShowcaseView) {
+                galleryShowcaseView.classList.remove("active-view");
+                galleryShowcaseView.classList.add("hidden-view");
+            }
+            if (galleryReelView) {
+                galleryReelView.classList.remove("hidden-view");
+                galleryReelView.classList.add("active-view");
+            }
+        } else {
+            if (viewShowcaseBtn) {
+                viewShowcaseBtn.classList.add("active");
+                viewShowcaseBtn.setAttribute("aria-pressed", "true");
+            }
+            if (viewReelBtn) {
+                viewReelBtn.classList.remove("active");
+                viewReelBtn.setAttribute("aria-pressed", "false");
+            }
+            if (galleryReelView) {
+                galleryReelView.classList.remove("active-view");
+                galleryReelView.classList.add("hidden-view");
+            }
+            if (galleryShowcaseView) {
+                galleryShowcaseView.classList.remove("hidden-view");
+                galleryShowcaseView.classList.add("active-view");
+            }
+        }
+    }
+
+    if (viewShowcaseBtn) viewShowcaseBtn.addEventListener("click", () => setGalleryView("lookbook"));
+    if (viewReelBtn) viewReelBtn.addEventListener("click", () => setGalleryView("reel"));
+
+    // Category Filter Tabs
+    const galleryTabs = document.querySelectorAll(".gallery-tab");
+    const lookbookCards = document.querySelectorAll(".gallery-card");
+    const filmFrameCards = document.querySelectorAll(".film-frame-card");
+
+    galleryTabs.forEach(tab => {
+        tab.addEventListener("click", () => {
+            galleryTabs.forEach(t => {
+                t.classList.remove("active");
+                t.setAttribute("aria-selected", "false");
+            });
+            tab.classList.add("active");
+            tab.setAttribute("aria-selected", "true");
+
+            const filter = tab.getAttribute("data-filter");
+
+            lookbookCards.forEach(card => {
+                const cardCat = card.getAttribute("data-category");
+                if (filter === "all" || cardCat === filter) {
+                    card.classList.remove("filtered-out");
+                } else {
+                    card.classList.add("filtered-out");
+                }
+            });
+
+            filmFrameCards.forEach(card => {
+                const cardCat = card.getAttribute("data-category");
+                if (filter === "all" || cardCat === filter) {
+                    card.style.display = "flex";
+                } else {
+                    card.style.display = "none";
+                }
+            });
+        });
+    });
+
+    // Reel Track Scrolling & Counter
+    const reelPrevBtn = document.getElementById("reelPrevBtn");
+    const reelNextBtn = document.getElementById("reelNextBtn");
+    const reelCounter = document.getElementById("reelCounter");
+
+    if (filmReelTrack && reelCounter) {
+        const updateReelCounter = () => {
+            const cards = Array.from(filmReelTrack.querySelectorAll(".film-frame-card")).filter(c => c.style.display !== "none");
+            if (cards.length === 0) return;
+            const scrollLeft = filmReelTrack.scrollLeft;
+            const cardWidth = cards[0].offsetWidth + 28; // gap
+            const currentIdx = Math.min(cards.length - 1, Math.max(0, Math.round(scrollLeft / cardWidth)));
+            reelCounter.textContent = `${String(currentIdx + 1).padStart(2, "0")} / ${String(cards.length).padStart(2, "0")}`;
+        };
+
+        filmReelTrack.addEventListener("scroll", updateReelCounter, { passive: true });
+
+        if (reelPrevBtn) {
+            reelPrevBtn.addEventListener("click", () => {
+                const cardWidth = filmReelTrack.querySelector(".film-frame-card")?.offsetWidth || 320;
+                filmReelTrack.scrollBy({ left: -(cardWidth + 28), behavior: "smooth" });
+            });
+        }
+
+        if (reelNextBtn) {
+            reelNextBtn.addEventListener("click", () => {
+                const cardWidth = filmReelTrack.querySelector(".film-frame-card")?.offsetWidth || 320;
+                filmReelTrack.scrollBy({ left: (cardWidth + 28), behavior: "smooth" });
+            });
+        }
+    }
+
+    // Heart Particle Burst Animation Helper
+    function spawnFloatingHeart(clientX, clientY) {
+        const heart = document.createElement("div");
+        heart.className = "floating-heart-particle";
+        heart.textContent = ["❤️", "💖", "✨", "💕", "🤍"][Math.floor(Math.random() * 5)];
+        heart.style.left = `${clientX}px`;
+        heart.style.top = `${clientY}px`;
+        document.body.appendChild(heart);
+        setTimeout(() => heart.remove(), 1200);
+    }
+
+    // Heart Reactions Handler
+    function handlePhotoLike(index, clientX, clientY) {
+        const item = galleryData[index];
+        if (!item) return;
+
+        item.hearts += 1;
+        item.liked = true;
+
+        // Persist
+        savedLikes[index] = { count: item.hearts, liked: true };
+        sessionStorage.setItem("wedding_gallery_likes", JSON.stringify(savedLikes));
+
+        // Update Card Heart Buttons
+        const cardHeartBtn = document.querySelector(`.card-heart-btn[data-index="${index}"]`);
+        if (cardHeartBtn) {
+            cardHeartBtn.classList.add("liked");
+            const countEl = cardHeartBtn.querySelector(".heart-count");
+            if (countEl) countEl.textContent = item.hearts;
+        }
+
+        // Update Lightbox Button if open
+        const lightboxLikeBtn = document.getElementById("lightboxLikeBtn");
+        const lightboxLikeCount = document.getElementById("lightboxLikeCount");
+        if (lightboxLikeBtn && currentLightboxIdx === index) {
+            lightboxLikeBtn.classList.add("liked");
+            if (lightboxLikeCount) lightboxLikeCount.textContent = item.hearts;
+        }
+
+        // Spawn visual particle
+        if (clientX && clientY) {
+            spawnFloatingHeart(clientX, clientY);
+            setTimeout(() => spawnFloatingHeart(clientX + 20, clientY - 10), 100);
+            setTimeout(() => spawnFloatingHeart(clientX - 20, clientY - 15), 200);
+        }
+    }
+
+    // Card Heart Button Clicks
+    document.querySelectorAll(".card-heart-btn").forEach(btn => {
+        const idx = parseInt(btn.getAttribute("data-index"), 10);
+        // Apply initial state
+        if (galleryData[idx] && galleryData[idx].liked) {
+            btn.classList.add("liked");
+            const countEl = btn.querySelector(".heart-count");
+            if (countEl) countEl.textContent = galleryData[idx].hearts;
+        }
+
+        btn.addEventListener("click", (e) => {
+            e.stopPropagation();
+            const rect = btn.getBoundingClientRect();
+            handlePhotoLike(idx, rect.left + rect.width / 2, rect.top);
+        });
+    });
+
+    // Double Tap / Double Click on Gallery Cards to Like
+    let lastTapTime = 0;
+    document.querySelectorAll(".gallery-card, .film-frame-card").forEach(card => {
+        const idx = parseInt(card.getAttribute("data-index"), 10);
+
+        // Desktop Double Click
+        card.addEventListener("dblclick", (e) => {
+            handlePhotoLike(idx, e.clientX, e.clientY);
+        });
+
+        // Mobile Double Tap
+        card.addEventListener("touchend", (e) => {
+            const currentTime = new Date().getTime();
+            const tapGap = currentTime - lastTapTime;
+            if (tapGap < 350 && tapGap > 0) {
+                const touch = e.changedTouches[0];
+                handlePhotoLike(idx, touch.clientX, touch.clientY);
+                e.preventDefault();
+            }
+            lastTapTime = currentTime;
+        });
+    });
+
+    // ==========================================
+    // 3d. LUXURY LIGHTBOX MODAL
+    // ==========================================
+    const lightboxModal      = document.getElementById("photoLightboxModal");
+    const lightboxBackdrop   = document.getElementById("lightboxBackdrop");
+    const lightboxCloseBtn   = document.getElementById("lightboxCloseBtn");
+    const lightboxPrevBtn    = document.getElementById("lightboxPrevBtn");
+    const lightboxNextBtn    = document.getElementById("lightboxNextBtn");
+    const lightboxImg        = document.getElementById("lightboxImg");
+    const lightboxBadge      = document.getElementById("lightboxBadge");
+    const lightboxCounter    = document.getElementById("lightboxCounter");
+    const lightboxTamil      = document.getElementById("lightboxTamil");
+    const lightboxTitle      = document.getElementById("lightboxTitle");
+    const lightboxDesc       = document.getElementById("lightboxDesc");
+    const lightboxLocation   = document.getElementById("lightboxLocation");
+    const lightboxDate       = document.getElementById("lightboxDate");
+    const lightboxLikeBtn    = document.getElementById("lightboxLikeBtn");
+    const lightboxLikeCount  = document.getElementById("lightboxLikeCount");
+    const lightboxThumbs     = document.getElementById("lightboxThumbs");
+    const lightboxFigure     = document.querySelector(".lightbox-figure");
+    const lightboxFloatingHeart = document.getElementById("lightboxFloatingHeart");
+
+    let currentLightboxIdx = 0;
+
+    // Build bottom thumbnail strip
+    if (lightboxThumbs) {
+        lightboxThumbs.innerHTML = galleryData.map((item, i) => `
+            <div class="lightbox-thumb ${i === 0 ? 'active' : ''}" data-index="${i}">
+                <img src="${item.src}" alt="${item.title}">
+            </div>
+        `).join("");
+
+        lightboxThumbs.querySelectorAll(".lightbox-thumb").forEach(thumb => {
+            thumb.addEventListener("click", () => {
+                const idx = parseInt(thumb.getAttribute("data-index"), 10);
+                openLightboxAt(idx);
+            });
+        });
+    }
+
+    function openLightboxAt(index) {
+        currentLightboxIdx = (index + galleryData.length) % galleryData.length;
+        const item = galleryData[currentLightboxIdx];
+
+        if (lightboxImg) {
+            lightboxImg.style.opacity = "0.3";
+            lightboxImg.src = item.src;
+            lightboxImg.onload = () => { lightboxImg.style.opacity = "1"; };
+        }
+
+        if (lightboxBadge)    lightboxBadge.textContent    = item.categoryLabel;
+        if (lightboxCounter)  lightboxCounter.textContent  = `${String(currentLightboxIdx + 1).padStart(2, "0")} / ${String(galleryData.length).padStart(2, "0")}`;
+        if (lightboxTamil) {
+            lightboxTamil.textContent = item.tamil || "";
+            lightboxTamil.style.display = item.tamil ? "block" : "none";
+        }
+        if (lightboxTitle)    lightboxTitle.textContent    = item.title;
+        if (lightboxDesc)     lightboxDesc.textContent     = item.desc;
+        if (lightboxLocation) lightboxLocation.textContent = item.location;
+        if (lightboxDate)     lightboxDate.textContent     = item.date;
+
+        if (lightboxLikeBtn && lightboxLikeCount) {
+            lightboxLikeCount.textContent = item.hearts;
+            if (item.liked) {
+                lightboxLikeBtn.classList.add("liked");
+            } else {
+                lightboxLikeBtn.classList.remove("liked");
+            }
+        }
+
+        // Highlight active thumbnail
+        if (lightboxThumbs) {
+            const thumbs = lightboxThumbs.querySelectorAll(".lightbox-thumb");
+            thumbs.forEach((t, i) => {
+                if (i === currentLightboxIdx) {
+                    t.classList.add("active");
+                    t.scrollIntoView({ behavior: "smooth", block: "nearest", inline: "center" });
+                } else {
+                    t.classList.remove("active");
+                }
+            });
+        }
+
+        if (lightboxModal) {
+            lightboxModal.classList.remove("hidden");
+            lightboxModal.setAttribute("aria-hidden", "false");
+            document.body.style.overflow = "hidden"; // Prevent background scroll
+        }
+    }
+
+    function closeLightbox() {
+        if (lightboxModal) {
+            lightboxModal.classList.add("hidden");
+            lightboxModal.setAttribute("aria-hidden", "true");
+            document.body.style.overflow = "";
+        }
+    }
+
+    // Attach click triggers to open lightbox
+    document.querySelectorAll(".gallery-card, .film-frame-card").forEach(el => {
+        el.addEventListener("click", (e) => {
+            // Avoid triggering when clicking heart button directly
+            if (e.target.closest(".card-heart-btn")) return;
+            const idx = parseInt(el.getAttribute("data-index"), 10);
+            openLightboxAt(idx);
+        });
+    });
+
+    if (lightboxCloseBtn) lightboxCloseBtn.addEventListener("click", closeLightbox);
+    if (lightboxBackdrop) lightboxBackdrop.addEventListener("click", closeLightbox);
+
+    if (lightboxPrevBtn) lightboxPrevBtn.addEventListener("click", () => openLightboxAt(currentLightboxIdx - 1));
+    if (lightboxNextBtn) lightboxNextBtn.addEventListener("click", () => openLightboxAt(currentLightboxIdx + 1));
+
+    // Keyboard navigation
+    document.addEventListener("keydown", (e) => {
+        if (!lightboxModal || lightboxModal.classList.contains("hidden")) return;
+        if (e.key === "Escape") closeLightbox();
+        if (e.key === "ArrowLeft") openLightboxAt(currentLightboxIdx - 1);
+        if (e.key === "ArrowRight") openLightboxAt(currentLightboxIdx + 1);
+    });
+
+    // Lightbox Modal Like Button
+    if (lightboxLikeBtn) {
+        lightboxLikeBtn.addEventListener("click", (e) => {
+            const rect = lightboxLikeBtn.getBoundingClientRect();
+            handlePhotoLike(currentLightboxIdx, rect.left + rect.width / 2, rect.top);
+        });
+    }
+
+    // Double tap on Lightbox figure
+    if (lightboxFigure) {
+        let lastLbTap = 0;
+        lightboxFigure.addEventListener("touchend", (e) => {
+            const now = new Date().getTime();
+            if (now - lastLbTap < 350) {
+                const touch = e.changedTouches[0];
+                handlePhotoLike(currentLightboxIdx, touch.clientX, touch.clientY);
+                if (lightboxFloatingHeart) {
+                    lightboxFloatingHeart.classList.add("show");
+                    setTimeout(() => lightboxFloatingHeart.classList.remove("show"), 600);
+                }
+                e.preventDefault();
+            }
+            lastLbTap = now;
+        });
+
+        // Touch swipe gestures for mobile lightbox
+        let touchStartX = 0;
+        let touchEndX = 0;
+
+        lightboxFigure.addEventListener("touchstart", (e) => {
+            touchStartX = e.changedTouches[0].screenX;
+        }, { passive: true });
+
+        lightboxFigure.addEventListener("touchend", (e) => {
+            touchEndX = e.changedTouches[0].screenX;
+            const diffX = touchEndX - touchStartX;
+            if (Math.abs(diffX) > 45) {
+                if (diffX < 0) {
+                    openLightboxAt(currentLightboxIdx + 1); // Swipe left -> Next
+                } else {
+                    openLightboxAt(currentLightboxIdx - 1); // Swipe right -> Prev
+                }
+            }
+        }, { passive: true });
     }
 
     // ==========================================
