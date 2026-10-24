@@ -24,25 +24,58 @@
 </head>
 <body class="dark-mode">
 
-    <!-- Starting Animation Overlay (Loader) -->
-    <div id="intro-loader">
+    <!-- Starting Animation Overlay (Invitation Opening Screen) -->
+    <div id="intro-loader" class="invitation-opening-screen">
         <canvas id="snow-canvas"></canvas>
+        <div class="loader-backdrop-glow"></div>
         <div class="loader-content">
-            <div class="animation-wrapper">
-                <!-- 1. Wish Text (Top) -->
+            <div class="invitation-card-frame">
+                <!-- Eyebrow & Wish -->
+                <div class="invitation-eyebrow">
+                    <span class="ornament-leaf">✦</span> The Wedding Reception <span class="ornament-leaf">✦</span>
+                </div>
+                
                 <div class="wish-text">11:11</div>
 
-                <!-- 2. Infinity Symbol (Middle) -->
+                <!-- Infinity Symbol -->
                 <div class="infinity-symbol">
                     <svg viewBox="0 0 100 50" width="100%" height="100%">
                         <path class="infinity-path" d="M 50,25 C 65,10 90,10 90,25 C 90,40 65,40 50,25 C 35,10 10,10 10,25 C 10,40 35,40 50,25 Z" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
                     </svg>
                 </div>
                 
-                <!-- 3. H·D Monogram Logo Emblem (Bottom) -->
+                <!-- Monogram Logo & Names -->
                 <div class="loader-logo-wrap">
                     <h1 class="loader-logo">H<span class="loader-dot">·</span>D</h1>
+                    <p class="loader-couple-names">Hari & Diya</p>
+                    <div class="loader-date-badge">
+                        <span>January 24th, 2027</span>
+                        <span class="date-dot">•</span>
+                        <span>Chennai</span>
+                    </div>
+                </div>
 
+                <!-- Prominent Interactive Button to Open Invitation & Start Music -->
+                <div class="invitation-open-action">
+                    <button id="openInvitationBtn" class="open-invitation-btn" aria-label="Open Wedding Invitation and start music">
+                        <span class="btn-glow-aura"></span>
+                        <span class="btn-envelope-icon">
+                            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+                                <polyline points="22,6 12,13 2,6"></polyline>
+                            </svg>
+                        </span>
+                        <span class="btn-text-group">
+                            <span class="btn-main-title">Open Invitation</span>
+                            <span class="btn-music-tag">Tap to Enter & Play Music ♫</span>
+                        </span>
+                        <span class="btn-arrow-icon">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                                <polyline points="9 18 15 12 9 6"></polyline>
+                            </svg>
+                        </span>
+                    </button>
+                    <p class="invitation-sound-hint">✨ Best experienced with music on</p>
                 </div>
             </div>
         </div>
@@ -888,6 +921,22 @@
                 </svg>
                 <span>Themes</span>
             </button>
+        </div>
+
+        <!-- Floating Live Reaction Love Button (Instagram-Style Tap to Shower Hearts) -->
+        <div id="floatingLiveLoveWidget" class="floating-live-love-widget">
+            <button id="floatingLiveHeartBtn" class="floating-live-heart-btn" aria-label="Send live love reaction" title="Tap to send live love ❤️">
+                <span class="live-pulse-ring"></span>
+                <span class="floating-heart-icon">❤️</span>
+                <span class="live-heart-text">Love</span>
+                <span class="live-badge-dot"></span>
+            </button>
+        </div>
+
+        <!-- Live Reaction Toast Notification -->
+        <div id="liveLikeToast" class="live-like-toast hidden" aria-live="polite">
+            <span class="toast-heart">❤️</span>
+            <span class="toast-text" id="liveLikeToastText">Someone loved a moment!</span>
         </div>
 
     </main>

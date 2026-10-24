@@ -73,65 +73,162 @@ document.addEventListener("DOMContentLoaded", () => {
 
     initSnowfall();
 
-    function runSnowfallLogoIntro() {
-        const infinitySymbol = document.querySelector(".infinity-symbol");
-        const infinityPath   = document.querySelector(".infinity-path");
-        const wishText       = document.querySelector(".wish-text");
+    // ==========================================
+    // AUDIO CONTROLLER (ACCESSIBLE TO INVITATION OPEN & WIDGET)
+    // ==========================================
+    const bgMusic = document.getElementById("bgMusic");
+    const musicToggle = document.getElementById("musicToggle");
+    let isMusicPlaying = false;
 
-        // ── ABSOLUTE FAILSAFE: Hide loader after 5s no matter what ──
-        // This prevents the loader from blocking all page content if GSAP
-        // fails, the tab is backgrounded, or onComplete never fires.
-        const FAILSAFE_MS = 5000;
-        const failsafeTimer = setTimeout(() => {
-            if (loader && !loader.classList.contains("hide")) {
-                loader.style.display = "none";
-                if (snowAnimId) cancelAnimationFrame(snowAnimId);
-            }
-        }, FAILSAFE_MS);
+    const updateUIPlaying = () => {
+        isMusicPlaying = true;
+        if (musicToggle) {
+            musicToggle.classList.add("playing");
+            musicToggle.classList.remove("pulse-hint");
+            const musicText = musicToggle.querySelector(".music-text");
+            const musicWaves = musicToggle.querySelector(".music-waves");
+            const iconPlay = musicToggle.querySelector(".icon-play");
+            const iconPause = musicToggle.querySelector(".icon-pause");
+            if (musicText) musicText.textContent = "Music Playing";
+            if (musicWaves) musicWaves.classList.remove("hidden");
+            if (iconPlay) iconPlay.classList.add("hidden");
+            if (iconPause) iconPause.classList.remove("hidden");
+        }
+    };
 
-        if (!loader || !logoWrap) {
-            clearTimeout(failsafeTimer);
-            return;
+    const updateUIPaused = () => {
+        isMusicPlaying = false;
+        if (musicToggle) {
+            musicToggle.classList.remove("playing");
+            const musicText = musicToggle.querySelector(".music-text");
+            const musicWaves = musicToggle.querySelector(".music-waves");
+            const iconPlay = musicToggle.querySelector(".icon-play");
+            const iconPause = musicToggle.querySelector(".icon-pause");
+            if (musicText) musicText.textContent = "Play Music";
+            if (musicWaves) musicWaves.classList.add("hidden");
+            if (iconPlay) iconPlay.classList.remove("hidden");
+            if (iconPause) iconPause.classList.add("hidden");
+        }
+    };
+
+    const playBackgroundMusic = () => {
+        if (!bgMusic) return Promise.resolve();
+        bgMusic.volume = 0.4;
+        return bgMusic.play().then(() => {
+            updateUIPlaying();
+        }).catch(err => {
+            console.log("Audio play gesture notice:", err);
+            if (musicToggle) musicToggle.classList.add("pulse-hint");
+        });
+    };
+
+    const togglePlayMusic = () => {
+        if (!bgMusic) return;
+        if (isMusicPlaying) {
+            bgMusic.pause();
+            updateUIPaused();
+        } else {
+            playBackgroundMusic();
+        }
+    };
+
+    // ==========================================
+    // 1. INVITATION OPENING GATE & ENTRANCE
+    // ==========================================
+    function setupInvitationGate() {
+        const openInvitationBtn = document.getElementById("openInvitationBtn");
+        const infinitySymbol    = document.querySelector(".infinity-symbol");
+        const infinityPath      = document.querySelector(".infinity-path");
+        const wishText          = document.querySelector(".wish-text");
+
+        if (typeof gsap !== "undefined") {
+            gsap.set(logoWrap, { opacity: 0, scale: 0.95, y: 15 });
+            if (infinitySymbol) gsap.set(infinitySymbol, { opacity: 0, scale: 1.2 });
+            if (wishText) gsap.set(wishText, { opacity: 0, y: -12, scale: 0.95 });
+            if (infinityPath) gsap.set(infinityPath, { strokeDasharray: 300, strokeDashoffset: 300 });
+            if (openInvitationBtn) gsap.set(openInvitationBtn, { opacity: 0, y: 18, scale: 0.92 });
+
+            const tl = gsap.timeline();
+            if (infinitySymbol) tl.to(infinitySymbol, { opacity: 1, scale: 1, duration: 0.7, ease: "power2.out" }, 0);
+            if (infinityPath)   tl.to(infinityPath, { strokeDashoffset: 0, duration: 1.2, ease: "power2.inOut" }, 0);
+            if (wishText)       tl.to(wishText, { opacity: 1, y: 0, scale: 1, duration: 0.7, ease: "power2.out" }, 0.1);
+            tl.to(logoWrap, { opacity: 1, scale: 1, y: 0, duration: 0.7, ease: "power2.out" }, 0.2);
+            if (openInvitationBtn) tl.to(openInvitationBtn, { opacity: 1, scale: 1, y: 0, duration: 0.7, ease: "back.out(1.5)" }, 0.4);
+        } else {
+            if (infinitySymbol) infinitySymbol.style.opacity = "1";
+            if (wishText) wishText.style.opacity = "1";
+            if (openInvitationBtn) openInvitationBtn.style.opacity = "1";
+            logoWrap.style.opacity = "1";
         }
 
-        const finishIntro = () => {
-            clearTimeout(failsafeTimer);
-            loader.classList.add("hide");
-            setTimeout(() => {
-                loader.style.display = "none";
-                if (snowAnimId) cancelAnimationFrame(snowAnimId);
-            }, 800);
+        let isOpened = false;
+        const openInvitation = () => {
+            if (isOpened) return;
+            isOpened = true;
+
+            // 1. Play Background Music immediately on user click
+            playBackgroundMusic();
+
+            // 2. Confetti Explosion
+            if (typeof confetti === "function") {
+                try {
+                    confetti({
+                        particleCount: 85,
+                        spread: 80,
+                        origin: { y: 0.6 },
+                        colors: ['#E5C378', '#C5A059', '#7D8C77', '#803B43', '#FFFFFF']
+                    });
+                } catch(e) {}
+            }
+
+            // 3. Luxurious Cinematic Reveal of the website
+            if (loader) {
+                if (typeof gsap !== "undefined") {
+                    gsap.to(loader, {
+                        opacity: 0,
+                        scale: 1.05,
+                        filter: "blur(10px)",
+                        duration: 0.85,
+                        ease: "power2.inOut",
+                        onComplete: () => {
+                            loader.classList.add("hide");
+                            loader.style.display = "none";
+                            if (snowAnimId) cancelAnimationFrame(snowAnimId);
+                        }
+                    });
+
+                    // Stagger animate hero elements
+                    gsap.from(".hero-content > *", {
+                        opacity: 0,
+                        y: 30,
+                        duration: 1.1,
+                        stagger: 0.18,
+                        ease: "power3.out",
+                        delay: 0.2
+                    });
+                } else {
+                    loader.classList.add("hide");
+                    setTimeout(() => {
+                        loader.style.display = "none";
+                        if (snowAnimId) cancelAnimationFrame(snowAnimId);
+                    }, 800);
+                }
+            }
         };
 
-        if (typeof gsap === "undefined") {
-            // GSAP not loaded — show everything instantly and dismiss quickly
-            if(infinitySymbol) infinitySymbol.style.opacity = "1";
-            if(wishText) wishText.style.opacity = "1";
-            logoWrap.style.opacity = "1";
-            logoWrap.style.transform = "scale(1) translateY(0)";
-            setTimeout(finishIntro, 1500);
-            return;
+        if (openInvitationBtn) {
+            openInvitationBtn.addEventListener("click", openInvitation);
         }
 
-        // Elements start invisible for the animated entrance
-        gsap.set(logoWrap, { opacity: 0, scale: 0.95, y: 15 });
-        if(infinitySymbol) gsap.set(infinitySymbol, { opacity: 0, scale: 1.2 });
-        if(wishText) gsap.set(wishText, { opacity: 0, y: -12, scale: 0.95 });
-        if(infinityPath) gsap.set(infinityPath, { strokeDasharray: 300, strokeDashoffset: 300 });
-
-        const tl = gsap.timeline({ onComplete: finishIntro });
-
-        // All elements reveal quickly and together
-        if(infinitySymbol) tl.to(infinitySymbol, { opacity: 1, scale: 1, duration: 0.7, ease: "power2.out" }, 0);
-        if(infinityPath)   tl.to(infinityPath, { strokeDashoffset: 0, duration: 1.2, ease: "power2.inOut" }, 0);
-        if(wishText)       tl.to(wishText, { opacity: 1, y: 0, scale: 1, duration: 0.7, ease: "power2.out" }, 0.1);
-        tl.to(logoWrap, { opacity: 1, scale: 1, y: 0, duration: 0.7, ease: "power2.out" }, 0.2);
-
-        // Brief hold, then dismiss
-        tl.to({}, { duration: 1.2 });
+        // Also allow pressing Enter or Space key to open
+        document.addEventListener("keydown", (e) => {
+            if (!isOpened && (e.key === "Enter" || e.key === " ")) {
+                openInvitation();
+            }
+        });
     }
 
-    runSnowfallLogoIntro();
+    setupInvitationGate();
 
 
 
@@ -351,12 +448,19 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     ];
 
-    // Load persisted likes from sessionStorage
-    const savedLikes = JSON.parse(sessionStorage.getItem("wedding_gallery_likes") || "{}");
+    // ==========================================
+    // REAL-TIME LIVE MULTI-USER LIKE SYSTEM
+    // (Instagram Live Style: WebSockets, SSE & BroadcastChannel)
+    // ==========================================
+    const CLIENT_ID = "guest_" + Math.random().toString(36).substring(2, 9) + "_" + Date.now().toString(36);
+    const LIVE_NTFY_TOPIC = "https://ntfy.sh/hari_diya_wedding_likes_live";
+
+    // Load persisted likes from localStorage (with fallback to previous storage)
+    const savedLikes = JSON.parse(localStorage.getItem("wedding_live_likes_v2") || sessionStorage.getItem("wedding_gallery_likes") || "{}");
     galleryData.forEach(item => {
         if (savedLikes[item.index] !== undefined) {
-            item.hearts = savedLikes[item.index].count;
-            item.liked = savedLikes[item.index].liked;
+            item.hearts = Math.max(item.hearts, savedLikes[item.index].count || item.hearts);
+            item.liked = savedLikes[item.index].liked || false;
         }
     });
 
@@ -506,7 +610,190 @@ document.addEventListener("DOMContentLoaded", () => {
         setTimeout(() => heart.remove(), 1200);
     }
 
-    // Heart Reactions Handler
+    // Live Toast Notification Helper
+    let toastTimer = null;
+    function showLiveToast(text) {
+        const toast = document.getElementById("liveLikeToast");
+        const toastText = document.getElementById("liveLikeToastText");
+        if (!toast || !toastText) return;
+        toastText.textContent = text;
+        toast.classList.remove("hidden");
+        clearTimeout(toastTimer);
+        toastTimer = setTimeout(() => {
+            toast.classList.add("hidden");
+        }, 3200);
+    }
+
+    // Update UI Heart Count with exact Instagram pulse animation
+    function updateUIHeartCount(index, count, animatePop) {
+        document.querySelectorAll(`.card-heart-btn[data-index="${index}"]`).forEach(btn => {
+            const countEl = btn.querySelector(".heart-count");
+            if (countEl) countEl.textContent = count;
+            if (animatePop) {
+                const symbol = btn.querySelector(".heart-symbol");
+                if (symbol) {
+                    symbol.classList.remove("pop-live");
+                    void symbol.offsetWidth; // trigger reflow
+                    symbol.classList.add("pop-live");
+                    setTimeout(() => symbol.classList.remove("pop-live"), 500);
+                }
+            }
+        });
+
+        // Update Lightbox if currently open for this photo
+        const lightboxLikeBtn = document.getElementById("lightboxLikeBtn");
+        const lightboxLikeCount = document.getElementById("lightboxLikeCount");
+        if (lightboxLikeBtn && typeof currentLightboxIdx !== "undefined" && currentLightboxIdx === index) {
+            if (lightboxLikeCount) lightboxLikeCount.textContent = count;
+            if (animatePop) {
+                const lbHeart = lightboxLikeBtn.querySelector(".like-heart");
+                if (lbHeart) {
+                    lbHeart.classList.remove("pop-live");
+                    void lbHeart.offsetWidth;
+                    lbHeart.classList.add("pop-live");
+                    setTimeout(() => lbHeart.classList.remove("pop-live"), 500);
+                }
+            }
+        }
+    }
+
+    // Trigger visual floating hearts from remote user's like
+    function triggerRemoteHeartAnimation(index) {
+        if (typeof index === "number" && galleryData[index]) {
+            const card = document.querySelector(`.gallery-card[data-index="${index}"]`) ||
+                         document.querySelector(`.film-frame-card[data-index="${index}"]`);
+            let inView = false;
+            if (card) {
+                const rect = card.getBoundingClientRect();
+                if (rect.top < window.innerHeight && rect.bottom > 0) {
+                    inView = true;
+                    spawnFloatingHeart(rect.right - 45, rect.bottom - 40);
+                    setTimeout(() => spawnFloatingHeart(rect.right - 25, rect.bottom - 50), 100);
+                    setTimeout(() => spawnFloatingHeart(rect.right - 60, rect.bottom - 45), 200);
+                }
+            }
+            if (!inView) {
+                const winW = window.innerWidth;
+                const winH = window.innerHeight;
+                spawnFloatingHeart(winW - 55, winH - 120);
+                setTimeout(() => spawnFloatingHeart(winW - 35, winH - 130), 100);
+                setTimeout(() => spawnFloatingHeart(winW - 75, winH - 125), 200);
+                const title = galleryData[index]?.title || `Photo #${index + 1}`;
+                showLiveToast(`❤️ Someone just loved "${title}"!`);
+            }
+        } else {
+            // Global love reaction
+            const winW = window.innerWidth;
+            const winH = window.innerHeight;
+            spawnFloatingHeart(winW - 55, winH - 120);
+            setTimeout(() => spawnFloatingHeart(winW - 35, winH - 135), 100);
+            setTimeout(() => spawnFloatingHeart(winW - 75, winH - 130), 200);
+            showLiveToast("❤️ Love received from another guest!");
+        }
+    }
+
+    // Broadcast like event to other users (BroadcastChannel + ntfy SSE)
+    let liveChannel = null;
+    if (typeof BroadcastChannel !== "undefined") {
+        try {
+            liveChannel = new BroadcastChannel("wedding_live_likes_channel");
+            liveChannel.onmessage = (event) => {
+                if (event.data && event.data.senderId !== CLIENT_ID) {
+                    handleRemoteLikeData(event.data);
+                }
+            };
+        } catch (e) {}
+    }
+
+    function broadcastLiveLike(index, newCount, clientX, clientY) {
+        const payload = {
+            senderId: CLIENT_ID,
+            index: index,
+            count: newCount,
+            timestamp: Date.now()
+        };
+
+        // 1. Local cross-tab
+        if (liveChannel) {
+            try { liveChannel.postMessage(payload); } catch (e) {}
+        }
+
+        // 2. Real-time Cloud ntfy broadcast
+        fetch(LIVE_NTFY_TOPIC, {
+            method: "POST",
+            headers: {
+                "Title": "Wedding Like",
+                "Tags": "heart"
+            },
+            body: JSON.stringify(payload)
+        }).catch(err => {
+            console.log("Live broadcast notice:", err);
+        });
+    }
+
+    function handleRemoteLikeData(data) {
+        if (!data || data.senderId === CLIENT_ID) return;
+        if (typeof data.index === "number" && galleryData[data.index]) {
+            const item = galleryData[data.index];
+            item.hearts = Math.max(item.hearts + 1, data.count || (item.hearts + 1));
+            savedLikes[data.index] = { count: item.hearts, liked: item.liked || false };
+            localStorage.setItem("wedding_live_likes_v2", JSON.stringify(savedLikes));
+            updateUIHeartCount(data.index, item.hearts, true);
+            triggerRemoteHeartAnimation(data.index);
+        } else if (data.type === "GLOBAL_LOVE") {
+            triggerRemoteHeartAnimation(null);
+        }
+    }
+
+    // Connect to Live Server-Sent Events (SSE) Stream
+    function initLiveSSEStream() {
+        if (typeof EventSource === "undefined") return;
+        try {
+            const es = new EventSource(`${LIVE_NTFY_TOPIC}/sse`);
+            es.onmessage = (e) => {
+                try {
+                    const parsed = JSON.parse(e.data);
+                    const data = parsed.message ? JSON.parse(parsed.message) : parsed;
+                    handleRemoteLikeData(data);
+                } catch (err) {}
+            };
+            es.onerror = () => {
+                // Browser natively handles SSE reconnection
+            };
+        } catch (err) {
+            console.log("SSE notice:", err);
+        }
+    }
+
+    initLiveSSEStream();
+
+    // Catch up with any recent likes on page load
+    function catchUpRecentLikes() {
+        fetch(`${LIVE_NTFY_TOPIC}/json?poll=1&since=12h`)
+            .then(res => res.text())
+            .then(text => {
+                const lines = text.trim().split("\n");
+                lines.forEach(line => {
+                    try {
+                        const obj = JSON.parse(line);
+                        const data = obj.message ? JSON.parse(obj.message) : obj;
+                        if (data && typeof data.index === "number" && galleryData[data.index]) {
+                            const item = galleryData[data.index];
+                            if (data.count && data.count > item.hearts) {
+                                item.hearts = data.count;
+                                savedLikes[data.index] = { count: item.hearts, liked: item.liked || false };
+                                localStorage.setItem("wedding_live_likes_v2", JSON.stringify(savedLikes));
+                                updateUIHeartCount(data.index, item.hearts, false);
+                            }
+                        }
+                    } catch (e) {}
+                });
+            }).catch(() => {});
+    }
+
+    catchUpRecentLikes();
+
+    // Heart Reactions Handler (Local Click)
     function handlePhotoLike(index, clientX, clientY) {
         const item = galleryData[index];
         if (!item) return;
@@ -516,30 +803,40 @@ document.addEventListener("DOMContentLoaded", () => {
 
         // Persist
         savedLikes[index] = { count: item.hearts, liked: true };
+        localStorage.setItem("wedding_live_likes_v2", JSON.stringify(savedLikes));
         sessionStorage.setItem("wedding_gallery_likes", JSON.stringify(savedLikes));
 
         // Update Card Heart Buttons
-        const cardHeartBtn = document.querySelector(`.card-heart-btn[data-index="${index}"]`);
-        if (cardHeartBtn) {
-            cardHeartBtn.classList.add("liked");
-            const countEl = cardHeartBtn.querySelector(".heart-count");
+        document.querySelectorAll(`.card-heart-btn[data-index="${index}"]`).forEach(btn => {
+            btn.classList.add("liked");
+            const countEl = btn.querySelector(".heart-count");
             if (countEl) countEl.textContent = item.hearts;
-        }
+            const symbol = btn.querySelector(".heart-symbol");
+            if (symbol) {
+                symbol.classList.remove("pop-live");
+                void symbol.offsetWidth;
+                symbol.classList.add("pop-live");
+                setTimeout(() => symbol.classList.remove("pop-live"), 500);
+            }
+        });
 
         // Update Lightbox Button if open
         const lightboxLikeBtn = document.getElementById("lightboxLikeBtn");
         const lightboxLikeCount = document.getElementById("lightboxLikeCount");
-        if (lightboxLikeBtn && currentLightboxIdx === index) {
+        if (lightboxLikeBtn && typeof currentLightboxIdx !== "undefined" && currentLightboxIdx === index) {
             lightboxLikeBtn.classList.add("liked");
             if (lightboxLikeCount) lightboxLikeCount.textContent = item.hearts;
         }
 
-        // Spawn visual particle
+        // Spawn visual particle for local click
         if (clientX && clientY) {
             spawnFloatingHeart(clientX, clientY);
             setTimeout(() => spawnFloatingHeart(clientX + 20, clientY - 10), 100);
             setTimeout(() => spawnFloatingHeart(clientX - 20, clientY - 15), 200);
         }
+
+        // Broadcast to other users in real time
+        broadcastLiveLike(index, item.hearts, clientX, clientY);
     }
 
     // Card Heart Button Clicks
@@ -581,6 +878,36 @@ document.addEventListener("DOMContentLoaded", () => {
             lastTapTime = currentTime;
         });
     });
+
+    // Floating Live Love Reaction Button (Instagram-Style Tap to Shower Hearts)
+    const floatingLiveHeartBtn = document.getElementById("floatingLiveHeartBtn");
+    if (floatingLiveHeartBtn) {
+        floatingLiveHeartBtn.addEventListener("click", (e) => {
+            e.stopPropagation();
+            const rect = floatingLiveHeartBtn.getBoundingClientRect();
+            const centerX = rect.left + rect.width / 2;
+            const centerY = rect.top;
+
+            spawnFloatingHeart(centerX, centerY);
+            setTimeout(() => spawnFloatingHeart(centerX + 15, centerY - 15), 100);
+            setTimeout(() => spawnFloatingHeart(centerX - 15, centerY - 20), 200);
+
+            // Broadcast global love to others
+            const payload = {
+                senderId: CLIENT_ID,
+                type: "GLOBAL_LOVE",
+                timestamp: Date.now()
+            };
+            if (liveChannel) {
+                try { liveChannel.postMessage(payload); } catch (e) {}
+            }
+            fetch(LIVE_NTFY_TOPIC, {
+                method: "POST",
+                headers: { "Title": "Wedding Love Reaction", "Tags": "heart,sparkles" },
+                body: JSON.stringify(payload)
+            }).catch(() => {});
+        });
+    }
 
     // ==========================================
     // 3d. LUXURY LIGHTBOX MODAL
@@ -1125,64 +1452,19 @@ document.addEventListener("DOMContentLoaded", () => {
     // ==========================================
     // 7. BACKGROUND MUSIC PLAYER & SCROLL TRIGGER
     // ==========================================
-    const bgMusic = document.getElementById("bgMusic");
-    const musicToggle = document.getElementById("musicToggle");
-
     if (bgMusic && musicToggle) {
-        const musicText = musicToggle.querySelector(".music-text");
-        const musicWaves = musicToggle.querySelector(".music-waves");
-        const iconPlay = musicToggle.querySelector(".icon-play");
-        const iconPause = musicToggle.querySelector(".icon-pause");
-
-        bgMusic.volume = 0.4; // Soft background volume
-        let isPlaying = false;
-
-        const updateUIPlaying = () => {
-            isPlaying = true;
-            musicToggle.classList.add("playing");
-            musicToggle.classList.remove("pulse-hint");
-            if (musicText) musicText.textContent = "Music Playing";
-            if (musicWaves) musicWaves.classList.remove("hidden");
-            if (iconPlay) iconPlay.classList.add("hidden");
-            if (iconPause) iconPause.classList.remove("hidden");
-        };
-
-        const updateUIPaused = () => {
-            isPlaying = false;
-            musicToggle.classList.remove("playing");
-            if (musicText) musicText.textContent = "Play Music";
-            if (musicWaves) musicWaves.classList.add("hidden");
-            if (iconPlay) iconPlay.classList.remove("hidden");
-            if (iconPause) iconPause.classList.add("hidden");
-        };
-
-        const togglePlay = () => {
-            if (isPlaying) {
-                bgMusic.pause();
-                updateUIPaused();
-            } else {
-                bgMusic.play().then(() => {
-                    updateUIPlaying();
-                }).catch(err => {
-                    console.log("Play failed on click:", err);
-                });
-            }
-        };
-
         musicToggle.addEventListener("click", (e) => {
             e.stopPropagation();
-            togglePlay();
+            togglePlayMusic();
         });
 
-        // Start music on user interaction (scroll, touch, wheel, click)
+        // Start music on user interaction fallback (scroll, touch, wheel, click)
         const tryPlayAudio = () => {
-            if (!isPlaying && bgMusic.paused) {
-                bgMusic.play().then(() => {
-                    updateUIPlaying();
+            if (!isMusicPlaying && bgMusic.paused) {
+                playBackgroundMusic().then(() => {
                     removeAllInteractionListeners();
                 }).catch(err => {
-                    // Autoplay blocked by browser policy until explicit touch/click
-                    musicToggle.classList.add("pulse-hint");
+                    if (musicToggle) musicToggle.classList.add("pulse-hint");
                 });
             }
         };
@@ -1208,7 +1490,7 @@ document.addEventListener("DOMContentLoaded", () => {
         const scrollIndicator = document.getElementById("scrollIndicator");
         if (scrollIndicator) {
             scrollIndicator.addEventListener("click", () => {
-                if (!isPlaying) tryPlayAudio();
+                if (!isMusicPlaying) tryPlayAudio();
             });
         }
     }

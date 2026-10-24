@@ -134,3 +134,23 @@ git push -u origin main
 4. Leave all settings at default (Vercel automatically detects a static HTML project).
 5. Click **Deploy**.
 6. Within a minute, your website will be live with a free, high-performance `.vercel.app` domain!
+
+---
+
+## ✨ Features Added
+
+### 💌 1. Interactive Opening Invitation Screen & Music Start
+- **Royal Wedding Gate**: When guests land on the website, they are greeted by an elegant glassmorphic invitation card surrounded by falling snowfall particles, featuring "The Wedding Reception", "11:11", the infinity path, and "Hari & Diya".
+- **Browser Autoplay Compliance**: Modern mobile and desktop browsers block audio autoplay without a direct user gesture. The prominent **"Open Invitation"** button provides a seamless, luxurious prompt.
+- **Cinematic Entrance**: Clicking the button immediately starts the romantic instrumental background music, triggers an explosion of golden celebration confetti, and smoothly reveals the wedding website hero section.
+
+### ❤️ 2. Real-Time Live Multi-User Like System (Instagram Live Style)
+- **Live Sync Across All Guests**: When any guest taps the heart button on a gallery card, inside the photo lightbox, or on the floating live love button, the like is instantly broadcast to all other guests viewing the website anywhere in the world!
+- **Instagram-Style Animations**:
+  - Heart icon pop pulse animation (`@keyframes heartPop`).
+  - Floating heart particles (`❤️`, `💖`, `✨`, `💕`, `🤍`) float upward across viewers' screens in real time.
+  - Floating live reaction stream toast ("❤️ Someone loved a moment!").
+- **Zero-Config Realtime Architecture**:
+  - Built-in real-time Server-Sent Events (SSE) via `ntfy.sh` (100% free, zero authentication required, instant cloud push).
+  - Native `BroadcastChannel` synchronization for instant 0ms cross-tab and cross-window sync.
+  - Automatic `localStorage` persistence so counts never reset on page refresh.
