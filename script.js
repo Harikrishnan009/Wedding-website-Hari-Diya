@@ -320,7 +320,7 @@ document.addEventListener("DOMContentLoaded", () => {
             index: 0,
             src: "assets/preweddingphotos/DSC03717.webp",
             title: "Living With You Is Pure Bliss",
-            tamil: "உன்னோடு வாழ்வது ஆனந்தமே",
+            tamil: "Forever Beside You, My Greatest Joy",
             subtitle: "Traditional Attire & Radiant Smiles",
             desc: "Wrapped in the timeless grace of our traditional attire, sharing genuine laughter and boundless warmth beside the vintage wooden window.",
             date: "Our 11:11 Wish",
