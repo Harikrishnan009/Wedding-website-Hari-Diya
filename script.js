@@ -318,7 +318,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const galleryData = [
         {
             index: 0,
-            src: "assets/preweddingphotos/DSC03717.JPG",
+            src: "assets/preweddingphotos/DSC03717.webp",
             title: "Living With You Is Pure Bliss",
             tamil: "உன்னோடு வாழ்வது ஆனந்தமே",
             subtitle: "Traditional Attire & Radiant Smiles",
@@ -330,7 +330,7 @@ document.addEventListener("DOMContentLoaded", () => {
         },
         {
             index: 1,
-            src: "assets/preweddingphotos/DSC03146.JPG",
+            src: "assets/preweddingphotos/DSC03146.webp",
             title: "Hand in Hand Through Greenery",
             tamil: "",
             subtitle: "Tender Glances & Sacred Promises",
@@ -342,7 +342,7 @@ document.addEventListener("DOMContentLoaded", () => {
         },
         {
             index: 2,
-            src: "assets/preweddingphotos/DSC03623.JPG",
+            src: "assets/preweddingphotos/DSC03623.webp",
             title: "A Gentle Touch of Forever",
             tamil: "",
             subtitle: "Heritage Veranda & Quiet Affection",
@@ -354,7 +354,7 @@ document.addEventListener("DOMContentLoaded", () => {
         },
         {
             index: 3,
-            src: "assets/preweddingphotos/DSC03339.JPG",
+            src: "assets/preweddingphotos/DSC03339.webp",
             title: "The Softness of Your Gaze",
             tamil: "",
             subtitle: "Terracotta Eaves & Intimate Devotion",
@@ -366,7 +366,7 @@ document.addEventListener("DOMContentLoaded", () => {
         },
         {
             index: 4,
-            src: "assets/preweddingphotos/DSC03228.JPG",
+            src: "assets/preweddingphotos/DSC03228.webp",
             title: "Boundless Laughter in Your Arms",
             tamil: "",
             subtitle: "Unfiltered Joy & Warm Hugs",
@@ -378,7 +378,7 @@ document.addEventListener("DOMContentLoaded", () => {
         },
         {
             index: 5,
-            src: "assets/preweddingphotos/DSC03863(1).JPG",
+            src: "assets/preweddingphotos/DSC03863(1).webp",
             title: "Whispers Above the Misty Lake",
             tamil: "",
             subtitle: "Cliffside Picnic & Scenic Embrace",
@@ -390,11 +390,11 @@ document.addEventListener("DOMContentLoaded", () => {
         },
         {
             index: 6,
-            src: "assets/preweddingphotos/DSC03912.JPG",
+            src: "assets/preweddingphotos/DSC03871.webp",
             title: "Calm Waters and Quiet Love",
             tamil: "",
             subtitle: "Lakeside Haven & Shared Peace",
-            desc: "Sitting side-by-side above the tranquil expanse of the lake, finding our favorite place in the quiet comfort of each other.",
+            desc: "Embraced above the tranquil expanse of the lake, sharing joyful laughter and finding our favorite place in the quiet comfort of each other.",
             date: "Peaceful Horizons",
             category: "nature",
             categoryLabel: "Nature & Shores",
@@ -402,7 +402,7 @@ document.addEventListener("DOMContentLoaded", () => {
         },
         {
             index: 7,
-            src: "assets/preweddingphotos/DSC03704.JPG",
+            src: "assets/preweddingphotos/DSC03704.webp",
             title: "By the Antique Gate",
             tamil: "",
             subtitle: "Traditional Elegance & Shared Smiles",
@@ -414,7 +414,7 @@ document.addEventListener("DOMContentLoaded", () => {
         },
         {
             index: 8,
-            src: "assets/preweddingphotos/DSC03895.JPG",
+            src: "assets/preweddingphotos/DSC03895.webp",
             title: "Pages of Our Next Chapter",
             tamil: "",
             subtitle: "Romance Novels & Playful Afternoon",
@@ -426,7 +426,7 @@ document.addEventListener("DOMContentLoaded", () => {
         },
         {
             index: 9,
-            src: "assets/preweddingphotos/DSC03952.JPG",
+            src: "assets/preweddingphotos/DSC03952.webp",
             title: "Sparks in the Twilight",
             tamil: "",
             subtitle: "Glowing Sparklers & Evening Laughter",
@@ -438,7 +438,7 @@ document.addEventListener("DOMContentLoaded", () => {
         },
         {
             index: 10,
-            src: "assets/preweddingphotos/DSC03447.JPG",
+            src: "assets/preweddingphotos/DSC03447.webp",
             title: "Standing by the Vintage Door",
             tamil: "",
             subtitle: "Antique Green Doorway & Poised Grace",
@@ -450,7 +450,7 @@ document.addEventListener("DOMContentLoaded", () => {
         },
         {
             index: 11,
-            src: "assets/preweddingphotos/DSC03455.JPG",
+            src: "assets/preweddingphotos/DSC03455.webp",
             title: "A Gentle Dance of Joy",
             tamil: "",
             subtitle: "Graceful Movement & Hand in Hand",
@@ -462,7 +462,7 @@ document.addEventListener("DOMContentLoaded", () => {
         },
         {
             index: 12,
-            src: "assets/preweddingphotos/DSC03171.JPG",
+            src: "assets/preweddingphotos/DSC03171.webp",
             title: "Walking Down the Heritage Lane",
             tamil: "",
             subtitle: "Village Walkway & Beaming Smiles",
@@ -474,7 +474,7 @@ document.addEventListener("DOMContentLoaded", () => {
         },
         {
             index: 13,
-            src: "assets/preweddingphotos/DSC03356.JPG",
+            src: "assets/preweddingphotos/DSC03356.webp",
             title: "A Soft Caress in the Sun",
             tamil: "",
             subtitle: "Sunlit Terracotta & Gentle Affection",
@@ -486,7 +486,7 @@ document.addEventListener("DOMContentLoaded", () => {
         },
         {
             index: 14,
-            src: "assets/preweddingphotos/DSC03482.JPG",
+            src: "assets/preweddingphotos/DSC03482.webp",
             title: "Candid Laughter and Deep Devotion",
             tamil: "",
             subtitle: "Heritage Wall & Shared Giggles",
@@ -498,7 +498,7 @@ document.addEventListener("DOMContentLoaded", () => {
         },
         {
             index: 15,
-            src: "assets/preweddingphotos/DSC03618.JPG",
+            src: "assets/preweddingphotos/DSC03618.webp",
             title: "Forehead to Forehead in Stillness",
             tamil: "",
             subtitle: "Porch Veranda & Quiet Devotion",
@@ -510,7 +510,7 @@ document.addEventListener("DOMContentLoaded", () => {
         },
         {
             index: 16,
-            src: "assets/preweddingphotos/DSC03854.JPG",
+            src: "assets/preweddingphotos/DSC03854.webp",
             title: "Gazing Across the Horizon",
             tamil: "",
             subtitle: "Rocky Cliff & Misty Waters",
@@ -522,7 +522,7 @@ document.addEventListener("DOMContentLoaded", () => {
         },
         {
             index: 17,
-            src: "assets/preweddingphotos/DSC03885.JPG",
+            src: "assets/preweddingphotos/DSC03885.webp",
             title: "Embraced by the Mountain Breeze",
             tamil: "",
             subtitle: "Mountain Breeze & Lakeside Embrace",
@@ -534,7 +534,7 @@ document.addEventListener("DOMContentLoaded", () => {
         },
         {
             index: 18,
-            src: "assets/preweddingphotos/DSC03918.JPG",
+            src: "assets/preweddingphotos/DSC03918.webp",
             title: "Laughter on the Picnic Blanket",
             tamil: "",
             subtitle: "Warm Embrace & Sweet Whispers",
@@ -546,7 +546,7 @@ document.addEventListener("DOMContentLoaded", () => {
         },
         {
             index: 19,
-            src: "assets/preweddingphotos/DSC03961.JPG",
+            src: "assets/preweddingphotos/DSC03961.webp",
             title: "Starlit Sparks and a Kiss",
             tamil: "",
             subtitle: "Nightfall Sparklers & Romantic Finale",
@@ -1614,8 +1614,8 @@ document.addEventListener("DOMContentLoaded", () => {
     const modeLightBtn = document.getElementById("modeLightBtn");
     const modeDarkBtn = document.getElementById("modeDarkBtn");
 
-    let currentTheme = "burgundy-champagne";
-    let currentMode = "dark";
+    let currentTheme = "eucalyptus-sand";
+    let currentMode = "light";
 
     const colorThemes = {
         "sage-gold": {
@@ -1787,7 +1787,7 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     };
 
-    // Ensure default theme (Burgundy & Gold Dark) is applied on initial load
+    // Ensure default theme (Eucalyptus & Sand Light) is applied on initial load
     applyTheme(currentTheme, currentMode);
 
     if (paletteToggle && palettePanel) {

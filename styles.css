@@ -2,18 +2,18 @@
    DESIGN SYSTEM & VARIABLES
 -----------------------------------------------------------------*/
 :root {
-    --bg-primary: #170F11;
-    --bg-secondary: #24181B;
-    --bg-card: #2D1F23;
-    --bg-navbar: rgba(23, 15, 17, 0.95);
-    --border-color: rgba(223, 192, 123, 0.3);
-    --color-sage: #A8525D;
-    --color-sage-light: #C9868F;
-    --color-sage-dark: #843842;
-    --color-gold: #DFC07B;
-    --color-gold-light: #F2DEC2;
-    --color-text-main: #FAF0F2;
-    --color-text-muted: #BFA8AC;
+    --bg-primary: #F8F7F3;
+    --bg-secondary: #EEECE4;
+    --bg-card: #FFFFFF;
+    --bg-navbar: rgba(248, 247, 243, 0.95);
+    --border-color: rgba(184, 151, 108, 0.25);
+    --color-sage: #5B7065;
+    --color-sage-light: #91A399;
+    --color-sage-dark: #37473F;
+    --color-gold: #B8976C;
+    --color-gold-light: #DCC5A8;
+    --color-text-main: #29302B;
+    --color-text-muted: #616B64;
     --font-serif: 'Cormorant Garamond', serif;
     --font-sans: 'Montserrat', sans-serif;
     --font-script: 'Alex Brush', cursive;
@@ -1349,10 +1349,10 @@ a {
 /* 2. Polaroid Style Cards (Photo 2 & Photo 6) */
 .card-polaroid {
     grid-column: span 5;
-    background: #281D21;
+    background: var(--bg-card);
     padding: 0.85rem 0.85rem 0.4rem 0.85rem;
-    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.3);
-    border: 1px solid rgba(223, 192, 123, 0.25);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+    border: 1px solid var(--border-color);
     transform-origin: center top;
 }
 
@@ -1406,7 +1406,7 @@ a {
     font-family: var(--font-serif);
     font-size: 1.35rem;
     font-weight: 500;
-    color: var(--color-gold-light);
+    color: var(--color-text-main);
     letter-spacing: 0.02em;
     line-height: 1.25;
 }
@@ -1486,13 +1486,17 @@ a {
     grid-column: span 12;
     display: grid;
     grid-template-columns: 1.35fr 1fr;
-    background: linear-gradient(135deg, var(--bg-card) 0%, rgba(168, 82, 93, 0.15) 100%);
-    border: 1px solid var(--color-gold);
+    background: linear-gradient(135deg, var(--bg-card) 0%, rgba(91, 112, 101, 0.08) 100%);
+    border: 1px solid var(--border-color);
 }
 
 .card-banner-macro .card-media-wrapper {
     aspect-ratio: 16 / 10;
     height: 100%;
+}
+
+.card-banner-macro .gallery-photo {
+    object-position: center 30%;
 }
 
 .card-banner-macro .card-caption {
@@ -1510,6 +1514,12 @@ a {
     margin: 0.6rem 0 1rem;
 }
 
+@media (max-width: 850px) {
+    .card-banner-macro {
+        grid-template-columns: 1fr;
+    }
+}
+
 /* 8 & 9. Artistic Squares (Photos 8 & 9) */
 .card-artistic-square {
     grid-column: span 6;
@@ -1519,14 +1529,19 @@ a {
     aspect-ratio: 4 / 3.5;
 }
 
-/* 10. Wide Finale Card (Photo 10) */
+/* 10. Wide Finale Card (Photo 20) - Sparklers clearly displayed */
 .card-wide-finale {
     grid-column: span 12;
     border: 1px solid var(--border-color);
 }
 
 .card-wide-finale .card-media-wrapper {
-    aspect-ratio: 21 / 9;
+    aspect-ratio: 16 / 10;
+    max-height: 640px;
+}
+
+.card-wide-finale .gallery-photo {
+    object-position: center 62%;
 }
 
 /* ----------------------------------------------------------------
