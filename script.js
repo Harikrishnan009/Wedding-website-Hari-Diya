@@ -908,6 +908,21 @@ document.addEventListener("DOMContentLoaded", () => {
         const item = galleryData[index];
         if (!item) return;
 
+        // User can only like each photo once
+        if (item.liked) {
+            showLiveToast(`❤️ You have already liked "${item.title}"!`);
+            document.querySelectorAll(`.card-heart-btn[data-index="${index}"]`).forEach(btn => {
+                const symbol = btn.querySelector(".heart-symbol");
+                if (symbol) {
+                    symbol.classList.remove("pop-live");
+                    void symbol.offsetWidth;
+                    symbol.classList.add("pop-live");
+                    setTimeout(() => symbol.classList.remove("pop-live"), 500);
+                }
+            });
+            return;
+        }
+
         item.hearts += 1;
         item.liked = true;
 
@@ -1615,7 +1630,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const modeDarkBtn = document.getElementById("modeDarkBtn");
 
     let currentTheme = "eucalyptus-sand";
-    let currentMode = "light";
+    let currentMode = "dark";
 
     const colorThemes = {
         "sage-gold": {

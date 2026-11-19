@@ -2,18 +2,18 @@
    DESIGN SYSTEM & VARIABLES
 -----------------------------------------------------------------*/
 :root {
-    --bg-primary: #F8F7F3;
-    --bg-secondary: #EEECE4;
-    --bg-card: #FFFFFF;
-    --bg-navbar: rgba(248, 247, 243, 0.95);
-    --border-color: rgba(184, 151, 108, 0.25);
-    --color-sage: #5B7065;
-    --color-sage-light: #91A399;
-    --color-sage-dark: #37473F;
-    --color-gold: #B8976C;
-    --color-gold-light: #DCC5A8;
-    --color-text-main: #29302B;
-    --color-text-muted: #616B64;
+    --bg-primary: #141816;
+    --bg-secondary: #1E2421;
+    --bg-card: #252D29;
+    --bg-navbar: rgba(20, 24, 22, 0.95);
+    --border-color: rgba(209, 178, 138, 0.3);
+    --color-sage: #768E81;
+    --color-sage-light: #A7B8AF;
+    --color-sage-dark: #55685E;
+    --color-gold: #D1B28A;
+    --color-gold-light: #E8D5BC;
+    --color-text-main: #EEF0ED;
+    --color-text-muted: #9FAEA6;
     --font-serif: 'Cormorant Garamond', serif;
     --font-sans: 'Montserrat', sans-serif;
     --font-script: 'Alex Brush', cursive;
@@ -1794,36 +1794,46 @@ a {
     position: absolute;
     top: 1rem;
     right: 1.2rem;
-    width: 42px;
-    height: 42px;
+    width: 44px;
+    height: 44px;
     border-radius: 50%;
-    background: rgba(23, 15, 17, 0.85);
-    border: 1px solid var(--border-color);
-    color: var(--color-text-main);
+    background: var(--bg-card);
+    border: 1.5px solid var(--color-gold);
+    color: var(--color-gold);
     display: flex;
     align-items: center;
     justify-content: center;
     cursor: pointer;
-    z-index: 10;
+    z-index: 100;
     transition: var(--transition-fast);
+    box-shadow: 0 4px 18px rgba(0, 0, 0, 0.35);
+}
+
+.lightbox-close-btn svg {
+    stroke: var(--color-gold);
+    stroke-width: 2.4;
+    transition: transform 0.3s ease, stroke 0.2s ease;
 }
 
 .lightbox-close-btn:hover {
-    background: var(--color-sage);
-    color: #FFF;
-    border-color: var(--color-sage);
-    transform: rotate(90deg);
+    background: var(--color-gold);
+    border-color: var(--color-gold);
+    transform: rotate(90deg) scale(1.08);
+}
+
+.lightbox-close-btn:hover svg {
+    stroke: #FFFFFF;
 }
 
 .lightbox-nav-btn {
     position: absolute;
     top: 45%;
     transform: translateY(-50%);
-    width: 50px;
-    height: 50px;
+    width: 48px;
+    height: 48px;
     border-radius: 50%;
-    background: rgba(23, 15, 17, 0.85);
-    border: 1px solid var(--color-gold);
+    background: var(--bg-card);
+    border: 1.5px solid var(--color-gold);
     color: var(--color-gold);
     display: flex;
     align-items: center;
@@ -1832,6 +1842,11 @@ a {
     z-index: 10;
     transition: var(--transition-fast);
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+}
+
+.lightbox-nav-btn svg {
+    stroke: var(--color-gold);
+    stroke-width: 2.4;
 }
 
 .lightbox-nav-btn.btn-prev {
@@ -1844,8 +1859,12 @@ a {
 
 .lightbox-nav-btn:hover {
     background: var(--color-gold);
-    color: #170F11;
-    transform: translateY(-50%) scale(1.1);
+    color: #FFFFFF;
+    transform: translateY(-50%) scale(1.08);
+}
+
+.lightbox-nav-btn:hover svg {
+    stroke: #FFFFFF;
 }
 
 /* Lightbox Inner Stage: Media + Sidebar */
